@@ -1,12 +1,16 @@
 import 'dart:convert';
 
+import 'package:gameolive/models/gamesResponse.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/game.dart';
+import '../models/config.dart';
 
-
-Future<List<Game>> fetchGames(int limit, int offset) async {
-  final response = await http.get('http://my-json-server.typicode.com/games');
+Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
+  final response = await http.get(config.server + '/api/tenant/${config.operatorId}/game?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${config.limit}&offset=${config.offset}',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${config.token}',
+      });
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -14,10 +18,10 @@ Future<List<Game>> fetchGames(int limit, int offset) async {
     var rb = response.body;
 
     // store json data into list
-    var list = json.decode(rb) as List;
+    var gameResponse = json.decode(rb) as Map<String, dynamic>;
 
     // iterate over the list and map each object in list to Img by calling Img.fromJson
-    List<Game> games = list.map((i)=>Game.fromJson(i)).toList();
+    GamesResponse games = GamesResponse.fromJson(gameResponse); // list.map((i)=>Game.fromJson(i)).toList();
 
     // print(games.runtimeType); //returns List<Img>
     // print(games[0].runtimeType); //returns Img

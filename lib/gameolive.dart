@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'models/auth.dart';
 import 'models/config.dart';
-import 'models/game.dart';
+import 'models/gamesResponse.dart';
 import 'services/authService.dart';
 import 'services/gamesService.dart';
-
+Config CONFIG;
 class Gameolive {
   static const MethodChannel _channel =
       const MethodChannel('gameolive');
@@ -22,10 +22,15 @@ class Gameolive {
     final Auth auth = await authenticate(config);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', auth.token);
+    CONFIG = config;
+    CONFIG.token = auth.token;
     return auth.token;
   }
 
-  static Future<List<Game>> getGames(int limit, int offset) async {
-    return fetchGames(limit, offset);
+  static Future<GamesResponse> getGames(int limit, int offset, [Config config]) async {
+    if(config  == null){
+      config = CONFIG;
+    }
+    return fetchGames(limit, offset, config);
   }
 }

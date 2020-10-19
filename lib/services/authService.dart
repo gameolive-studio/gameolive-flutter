@@ -7,7 +7,16 @@ import '../models/config.dart';
 
 
 Future<Auth> authenticate(Config config) async {
-  final response = await http.get('http://my-json-server.typicode.com/auth');
+  final response = await http.post(config.server + '/api/auth/machine-sign-in',
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      "operator_id": config.operatorId,
+      "client_secret": config.clientSecret,
+      "client_id": config.clientId,
+    })
+  );
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -18,7 +27,7 @@ Future<Auth> authenticate(Config config) async {
     // var list = json.decode(rb) as List;
 
     // iterate over the list and map each object in list to Img by calling Img.fromJson
-    Auth auth = Auth.fromJson(json.decode(rb));
+    Auth auth = new Auth(token: rb);
     return auth;
   } else {
     // If the server did not return a 200 OK response,

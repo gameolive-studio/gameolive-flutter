@@ -14,8 +14,8 @@ class Game {
 
     return Game(
       id: json['id'],
-      title: json['title'],
-      configuration: Configuration.fromJson(json['connection']),
+      title: json['name'],
+      configuration: Configuration.fromJson(json['configuration']),
       photos: photos
     );
   }

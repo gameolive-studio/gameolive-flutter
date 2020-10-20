@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'package:gameolive/models/launchConfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
@@ -33,4 +34,9 @@ class Gameolive {
     }
     return fetchGames(limit, offset, config);
   }
+  static Future<String> getGameUrl(LaunchConfig gameLaunchConfig) async {
+    return fetchGameUrl(gameLaunchConfig, CONFIG);
+  }
+  // register player
+ // launch game
 }

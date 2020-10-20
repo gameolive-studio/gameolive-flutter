@@ -6,10 +6,18 @@ import 'package:gameolive/gameolive.dart';
 import 'package:gameolive/models/config.dart';
 import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
+import 'package:gameolive/models/launchConfig.dart';
+
+import 'custom_dialog_box.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 
 const clientId= "fb_game_sa-4862d2b3-fb68-4963-b47b-beec6af422a5@05cc351f-dbd0-43af-aaaf-515ffaecdd34.gol";
 const clientSecret= "abc1602937927739";
 const operatorId= "5f8ae3cbc34272000af1f3bf";
+const server= 'https://elantra-api.gameolive.com';
+const static= 'https://static.luckybeetlegames.com';
+
 
 void main() {
   runApp(MyApp());
@@ -35,8 +43,8 @@ class _MyAppState extends State<MyApp> {
         operatorId: operatorId,
         clientId: clientId,
         clientSecret: clientSecret,
-        server: 'https://elantra-api.gameolive.com',
-        static: 'https://static.luckybeetlegames.com'
+        server: server,
+        static: static
     );
     List<Game> games;
     try {
@@ -76,17 +84,98 @@ class _MyAppState extends State<MyApp> {
           // Convert each item into a widget based on the type of item it is.
           itemBuilder: (context, index) {
             final item = _games[index];
-            return GestureDetector(
-                child:
-                ListTile(
-              title: Text(item.title),
-              subtitle: Text(item.configuration.id),
-            ),
-              onTap: () => Scaffold
-                  .of(context)
-                  .showSnackBar(SnackBar(content: Text(item.title.toString()))),
+            return Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.25,
+              child: Container(
+                color: Colors.white,
+                child: ListTile(
+                  leading: Text(('<')),
+                  title: Text(item.title),
+                  trailing: Text(('Swipe >')),
+                  subtitle: Text((item.configuration.id)),
+                ),
+              ),
+              actions: <Widget>[
+                IconSlideAction(
+                  caption: 'Archive',
+                  color: Colors.blue,
+                  icon: Icons.archive,
+                  onTap: () async {
+                    LaunchConfig _launchConfig =  new LaunchConfig();
+                    _launchConfig.server = server;
+                    _launchConfig.static = static;
+                    _launchConfig.operatorId = operatorId;
+                    _launchConfig.configId = item.configuration.id;
+                    _launchConfig.playerId = "ABCD"; // unique if of the player
+                    String gameLink = await Gameolive.getGameUrl(_launchConfig);
+                    print(gameLink);
+                    },
+                ),
+                IconSlideAction(
+                  caption: 'Share',
+                  color: Colors.indigo,
+                  icon: Icons.share,
+                  onTap: () {print('share');},
+                ),
+              ],
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: 'inline',
+                  color: Colors.blue,
+                  icon: Icons.more_horiz,
+                  onTap: ()  {print('more');},
+                ),
+                IconSlideAction(
+                  caption: 'redirect',
+                  color: Colors.black45,
+                  icon: Icons.arrow_forward,
+                  onTap: ()  {print('more');},
+                ),
+                IconSlideAction(
+                  caption: 'Dialog',
+                  color: Colors.indigo,
+                  icon: Icons.add_to_photos ,
+                  onTap: () {
+                      showDialog(context: context,
+                          builder: (BuildContext context){
+                            return CustomDialogBox(
+                            title: "Custom Dialog Demo",
+                            descriptions: "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
+                            text: "Yes",
+                            );
+                        }
+                      );
+                  },
+                ),
+              ],
             );
-          },
+          }
+          // {
+          //   final item = _games[index];
+          //   return GestureDetector(
+          //       child:
+          //       ListTile(
+          //     title: Text(item.title),
+          //     subtitle: Text(item.configuration.id),
+          //   ),
+          //     onTap: () =>{
+          //       showDialog(context: context,
+          //       builder: (BuildContext context){
+          //       return CustomDialogBox(
+          //       title: "Custom Dialog Demo",
+          //       descriptions: "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
+          //       text: "Yes",
+          //       );
+          //       }
+          //       )
+          //     }
+          //     // {Scaffold
+          //     //     .of(context)
+          //     //     .showSnackBar(SnackBar(content: Text(item.title.toString()))),
+          //     // }
+          //   );
+          // },
         ),
       ),
     );

@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'package:gameolive/models/launchConfig.dart';
+import 'package:gameolive/services/playerService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
@@ -37,6 +38,7 @@ class Gameolive {
   static Future<String> getGameUrl(LaunchConfig gameLaunchConfig) async {
     return fetchGameUrl(gameLaunchConfig, CONFIG);
   }
-  // register player
- // launch game
+  static Future<String> getPlayerToken(String playerUid, [Config config]){
+    return fetchPlayerToken(playerUid, CONFIG);
+  }
 }

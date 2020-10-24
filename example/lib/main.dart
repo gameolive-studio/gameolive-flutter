@@ -34,10 +34,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<Game> _games;
   LaunchConfig inlineLaunchConfig;
+  TextEditingController _c;
+  String _playerId = "DEMO_USER";
+  String _playerToken = "DEMO_USER";
   @override
   void initState() {
+    _c = new TextEditingController();
     super.initState();
     initPlatformState();
   }
@@ -72,12 +78,47 @@ class _MyAppState extends State<MyApp> {
       _games = games;
     });
   }
+  //
+  // _showDialog() async {
+  //   await showDialog<String>(
+  //     context: context,
+  //     child: new _SystemPadding(child: new AlertDialog(
+  //       contentPadding: const EdgeInsets.all(16.0),
+  //       content: new Row(
+  //         children: <Widget>[
+  //           new Expanded(
+  //             child: new TextField(
+  //               autofocus: true,
+  //               decoration: new InputDecoration(
+  //                   labelText: 'Full Name', hintText: 'eg. John Smith'),
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //       actions: <Widget>[
+  //         new FlatButton(
+  //             child: const Text('CANCEL'),
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             }),
+  //         new FlatButton(
+  //             child: const Text('OPEN'),
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             })
+  //       ],
+  //     ),
+  //     ),
+  //   );
+  // }
+
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
+          key: _scaffoldKey,
+          appBar: AppBar(
           title: const Text('Example app'),
         ),
         body: _games == null? const Text('Execution is in progress'):
@@ -140,7 +181,66 @@ class _MyAppState extends State<MyApp> {
                        caption: 'Register Player',
                        color: Colors.indigo,
                        icon: Icons.person_add,
-                       onTap: () {print('share');},
+                       onTap: () {
+                         showDialog(
+                             context: context,
+                             builder: (BuildContext context) {
+                               return Dialog(
+                                 shape: RoundedRectangleBorder(
+                                     borderRadius:
+                                     BorderRadius.circular(20.0)), //this right here
+                                 child: Container(
+                                   height: 200,
+                                   child: Padding(
+                                     padding: const EdgeInsets.all(12.0),
+                                     child: Column(
+                                       mainAxisAlignment: MainAxisAlignment.center,
+                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                       children: [
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Player UID'),
+                                           controller: _c,
+                                         ),
+                                         SizedBox(
+                                           width: 320.0,
+                                           child: RaisedButton(
+                                             onPressed: () async {
+                                               try {
+                                                 String playerToken = await Gameolive
+                                                     .getPlayerToken(_c.text);
+                                                 setState(() {
+                                                   this._playerId = _c.text;
+                                                   this._playerToken =
+                                                       playerToken;
+                                                 });
+                                               }catch(ex){
+                                                 final snackBar = SnackBar(
+                                                     duration: const Duration(seconds: 10),
+                                                     content: Text('Exception while getting plater token!'),
+                                                 );
+                                                 _scaffoldKey.currentState.showSnackBar(snackBar);
+                                               }
+                                             },
+                                             child: Text(
+                                               "Create",
+                                               style: TextStyle(color: Colors.white),
+                                             ),
+                                             color: const Color(0xFF1BC0C5),
+                                           ),
+                                         ),
+                                         Text('Current Player: ${_playerId}')
+                                       ],
+                                     ),
+                                   ),
+                                 ),
+                               );
+                             });
+
+
+
+
+                         print('share');},
                      ),
                    ],
                    secondaryActions: <Widget>[

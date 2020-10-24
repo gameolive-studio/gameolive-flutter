@@ -109,7 +109,14 @@ class _MyAppState extends State<MyApp> {
                     _launchConfig.configId = item.configuration.id;
                     _launchConfig.playerId = "ABCD"; // unique if of the player
                     String gameLink = await Gameolive.getGameUrl(_launchConfig);
-                    print(gameLink);
+                    showDialog(context: context,
+                        builder: (BuildContext context){
+                          return CustomDialogBox(
+                            title: "Link to the game",
+                            descriptions: gameLink,
+                            text: "Close",
+                          );
+                        });
                     },
                 ),
                 IconSlideAction(

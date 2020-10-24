@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'constants.dart';
 
@@ -49,7 +50,18 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
             children: <Widget>[
               Text(widget.title,style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
               SizedBox(height: 15,),
-              Text(widget.descriptions,style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+            GestureDetector(
+                onTap: () async {
+                  var url = widget.descriptions;
+                  if (await canLaunch(url)){
+                    await launch(url);
+                  }
+                  else
+                    // can't launch url, there is some error
+                    throw "Could not launch $url";
+                },
+                child: Text("Click here to launch the game",style: TextStyle(fontSize: 18),)),
+             // Text(widget.descriptions,style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
               SizedBox(height: 22,),
               Align(
                 alignment: Alignment.bottomRight,

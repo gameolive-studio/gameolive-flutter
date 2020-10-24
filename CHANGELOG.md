@@ -1,3 +1,10 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial release consist of basic functionalities starting from featching all games to launching them in different modes like Inline, Redirect, Dialog, in-browser.
+
+Features:
+  - Get Games
+  - Register Player
+  - Game Launch on same view (in-line mode)
+  - Game Launch in Dialog Window (dialog mode)
+  - Game Launch in new screen (redirect mode)

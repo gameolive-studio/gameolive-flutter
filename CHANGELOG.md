@@ -1,3 +1,7 @@
+## 0.0.2
+
+* Added additional metadata to Games.
+
 ## 0.0.1
 
 * Initial release consist of basic functionalities starting from featching all games to launching them in different modes like Inline, Redirect, Dialog, in-browser.

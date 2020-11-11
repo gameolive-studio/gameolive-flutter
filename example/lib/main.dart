@@ -151,7 +151,18 @@ class _MyAppState extends State<MyApp> {
                        leading: Text(('<')),
                        title: Text(item.title),
                        trailing: Text(('Swipe >')),
-                       subtitle: Text((item.configuration.id)),
+                       subtitle: Column(
+                         mainAxisAlignment: MainAxisAlignment.start,
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+                           Text(item.configuration.id),
+                           Text('enabled: ${item.enabled}'),
+                           Text('label: ${item.label}'),
+                           Text('Rating: ${item.rating}'),
+                           Text('playerCount: ${item.playerCount}'),
+                           Text('description: ${item.description}')
+                         ],
+                       ),
                      ),
                    ),
                    actions: <Widget>[

@@ -62,7 +62,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                 ),
                 decoration: new BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: Colors.orange,
+                  color: Colors.black,
                 )
             ))
     );

@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Added wallet API integration.
+
 ## 0.0.2
 
 * Added additional metadata to Games.

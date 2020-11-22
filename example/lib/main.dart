@@ -8,6 +8,7 @@ import 'package:gameolive/models/config.dart';
 import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
+import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/GameOliveView.dart';
 import 'package:gameolive/GameOliveDialogBox.dart';
 
@@ -22,7 +23,8 @@ const clientSecret= "abc1602937927739";
 const operatorId= "5f8ae3cbc34272000af1f3bf";
 const server= 'https://elantra-api.gameolive.com';
 const static= 'https://static.luckybeetlegames.com';
-
+const walletClientId = "wallet_manager-6f18a5bb-9b2e-4ed8-b7db-abf6465256f8@4e539d5f-4dd9-4518-8e67-49e401ea0b4b.gol";
+const walletClientSecret = "gol1606078109162";
 
 void main() {
   runApp(MyApp());
@@ -39,11 +41,24 @@ class _MyAppState extends State<MyApp> {
   List<Game> _games;
   LaunchConfig inlineLaunchConfig;
   TextEditingController _c;
+  TextEditingController _txtTransactionId;
+  TextEditingController _txtAmount;
+  TextEditingController _txtCurrency;
+  TextEditingController _txtCoins;
+  TextEditingController _txtRefernce;
+  TextEditingController _txtRemarks;
+
   String _playerId = "DEMO_USER";
   String _playerToken = "DEMO_USER";
   @override
   void initState() {
     _c = new TextEditingController();
+    _txtTransactionId = new TextEditingController();
+    _txtAmount = new TextEditingController();
+    _txtCurrency = new TextEditingController();
+    _txtCoins = new TextEditingController();
+    _txtRefernce = new TextEditingController();
+    _txtRemarks = new TextEditingController();
     super.initState();
     initPlatformState();
   }
@@ -201,7 +216,6 @@ class _MyAppState extends State<MyApp> {
                                      borderRadius:
                                      BorderRadius.circular(20.0)), //this right here
                                  child: Container(
-                                   height: 200,
                                    child: Padding(
                                      padding: const EdgeInsets.all(12.0),
                                      child: Column(
@@ -225,6 +239,15 @@ class _MyAppState extends State<MyApp> {
                                                    this._playerToken =
                                                        playerToken;
                                                  });
+                                                 Config _walletConfig = new Config(
+                                                     operatorId: operatorId,
+                                                     clientId: walletClientId,
+                                                     clientSecret: walletClientSecret,
+                                                     server: server,
+                                                     static: static
+                                                 );
+                                                 var transactions = await Gameolive.getPlayerAccountHistory(this._playerId,0,10,_walletConfig);
+                                                 print(transactions.count);
                                                }catch(ex){
                                                  final snackBar = SnackBar(
                                                      duration: const Duration(seconds: 10),
@@ -234,13 +257,84 @@ class _MyAppState extends State<MyApp> {
                                                }
                                              },
                                              child: Text(
-                                               "Create",
+                                               "Register Or Login Player",
                                                style: TextStyle(color: Colors.white),
                                              ),
                                              color: const Color(0xFF1BC0C5),
                                            ),
                                          ),
-                                         Text('Current Player: ${_playerId}')
+                                         Text('Current Player: ${_playerId}'),
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Transaction UID'),
+                                           controller: _txtTransactionId,
+                                         ),
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Amount'),
+                                           controller: _txtAmount,
+                                         ),
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Currency'),
+                                           controller: _txtCurrency,
+                                         ),
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Coins'),
+                                           controller: _txtCoins,
+                                         ),
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Reference'),
+                                           controller: _txtRefernce,
+                                         ),
+                                         TextField(
+                                           decoration: InputDecoration(
+                                               hintText: 'Remarks'),
+                                           controller: _txtRemarks,
+                                         ),
+                                         SizedBox(
+                                           width: 320.0,
+                                           child: RaisedButton(
+                                             onPressed: () async {
+                                               try {
+                                                 Transaction _trx = new Transaction(
+                                                   uid: _txtTransactionId.text,
+                                                   amount: double.parse(_txtAmount.text),
+                                                   currency: _txtCurrency.text,
+                                                   coins: int.parse(_txtCoins.text),
+                                                   ref:_txtRefernce.text
+                                                 );
+                                                 _trx.remarks = _txtRemarks.text;
+                                                  // Create new configuration with service account with Wallet Manager permissions.
+                                                 // it is recommended to no give wallet manager permissions to Game Admin or other permissions as it might risk the exploitation of wallet
+                                                 // it is highly recommended to use wallet manager service account for server to server request and not to use in client application, but if you wish to use it on client side for simplicity you can do it at your own risk
+                                                 Config _walletConfig = new Config(
+                                                     operatorId: operatorId,
+                                                     clientId: walletClientId,
+                                                     clientSecret: walletClientSecret,
+                                                     server: server,
+                                                     static: static
+                                                 );
+                                                 var _newTransaction = await Gameolive
+                                                     .depositToPlayerAccount(this._playerId, _trx, _walletConfig);
+                                                 print(_newTransaction.uid);
+                                               }catch(ex){
+                                                 final snackBar = SnackBar(
+                                                   duration: const Duration(seconds: 10),
+                                                   content: Text('Exception while making player transaction!'),
+                                                 );
+                                                 _scaffoldKey.currentState.showSnackBar(snackBar);
+                                               }
+                                             },
+                                             child: Text(
+                                               "Deposit to Player wallet",
+                                               style: TextStyle(color: Colors.white),
+                                             ),
+                                             color: const Color(0xFF1BC0C5),
+                                           ),
+                                         ),
                                        ],
                                      ),
                                    ),

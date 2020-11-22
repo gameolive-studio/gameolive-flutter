@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:gameolive/models/launchConfig.dart';
 import 'package:gameolive/services/playerService.dart';
+import 'package:gameolive/services/walletService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
@@ -9,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'models/auth.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
+import 'models/transaction.dart';
+import 'models/transactionsResponse.dart';
 import 'services/authService.dart';
 import 'services/gamesService.dart';
 Config CONFIG;
@@ -41,4 +44,18 @@ class Gameolive {
   static Future<String> getPlayerToken(String playerUid, [Config config]){
     return fetchPlayerToken(playerUid, CONFIG);
   }
+
+  /* Wallet Related API's*/
+  static Future<Transaction> getPlayerBalance(String playerUid, Config config){
+    return fetchPlayerBalance(playerUid, config);
+  }
+  static Future<Transaction> depositToPlayerAccount(String playerUid,Transaction transaction, Config config){
+    transaction.type = "dr";
+    return debitToPlayerAccount(playerUid, transaction, config);
+  }
+  static Future<TransactionsResponse> getPlayerAccountHistory(String playerUid, int offset, int limit, Config config){
+    return fetchPlayerAccountHistory(playerUid, offset, limit, config);
+  }
+
+
 }

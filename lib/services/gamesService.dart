@@ -52,12 +52,16 @@ Future<String> fetchGameUrl(LaunchConfig gameLaunchConfig,Config config) async {
     String clientId = gameLauncherResponse['configuration']['clientId'];
     String gameId = gameLauncherResponse['gameId'];
     String urlData = 'gameid=${gameId}&configid=${configId}&server=${config.server}&operatorid=${config.operatorId}&playerid=${playerId}';
-  if (gameLaunchConfig.rawUrl != true) {
-    Codec<String, String> stringToBase64 = utf8.fuse(base64);
-    String encoded = stringToBase64.encode(urlData);
-    urlData = 'token=$encoded';
-  }
-  return '${config.static}/${clientId}/${DEFAULT_INDEX_PATH}/index.html?${urlData}';
+    if (gameLaunchConfig.rawUrl != true) {
+      Codec<String, String> stringToBase64 = utf8.fuse(base64);
+      String encoded = stringToBase64.encode(urlData);
+      urlData = 'token=$encoded';
+    }
+    String gameLink = gameLauncherResponse["gameLink"];
+    if(gameLink== null || gameLink.length==0){
+      gameLink = '${config.static}/${clientId}/${DEFAULT_INDEX_PATH}/index.html';
+    }
+  return '${gameLink}?${urlData}';
   }else {
     // If the server did not return a 200 OK response,
     // then throw an exception.

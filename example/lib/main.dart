@@ -145,6 +145,11 @@ class _MyAppState extends State<MyApp> {
                 height: 220,
                 child:GameOliveWindow(
                   gameLaunchConfig: inlineLaunchConfig,
+                  onRoundStarted: (started)=>{
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text(  " started ${started}")),
+                    )
+                  },
                 )
             ),
 

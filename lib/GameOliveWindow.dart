@@ -1,16 +1,20 @@
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gameolive/shared/StandardEvents.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'gameolive.dart';
 import 'models/launchConfig.dart';
 
 class GameOliveWindow extends StatefulWidget {
   final LaunchConfig gameLaunchConfig;
+  final Function(bool) onRoundStarted;
 
-  const GameOliveWindow({Key key, this.gameLaunchConfig}) : super(key: key);
+  const GameOliveWindow({Key key, @required this.gameLaunchConfig, this.onRoundStarted}) : super(key: key);
 
   @override
   _GameOliveWindowState createState() => _GameOliveWindowState();
@@ -55,6 +59,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (WebViewController webViewController) {
                     _controller.complete(webViewController);
+                    _addPostScript(webViewController, context);
                   },
                   javascriptChannels: <JavascriptChannel>[
                     _gameoliveChannel(context),
@@ -73,9 +78,15 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
         name: 'GAMEOLIVE',
         onMessageReceived: (JavascriptMessage message) {
           // ignore: deprecated_member_use
-          Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text(message.message)),
-          );
+          // sleep(Duration(seconds: 60));
+          Map<String, dynamic> event =  jsonDecode(message.message);
+          if(event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED && widget.onRoundStarted !=null){
+            widget.onRoundStarted(true);
+          }
         });
+  }
+
+  void _addPostScript(WebViewController controller, BuildContext context) async {
+    await controller.evaluateJavascript('window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));};');
   }
 }

@@ -380,6 +380,7 @@ class _MyAppState extends State<MyApp> {
                          launchConfig.static = static;
                          launchConfig.operatorId = operatorId;
                          launchConfig.configId = item.configuration.id;
+                         launchConfig.orientation = "landscape";
                          launchConfig.playerId = "ABCD"; // unique if of the player
                          Navigator.push(
                            context,

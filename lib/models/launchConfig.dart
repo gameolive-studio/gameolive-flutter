@@ -7,4 +7,5 @@ class LaunchConfig {
    String launchType;
    String gameContainerId;
    bool rawUrl;
+   String orientation = "";
 }

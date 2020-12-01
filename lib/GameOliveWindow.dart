@@ -9,6 +9,8 @@ import 'package:gameolive/shared/StandardEvents.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'gameolive.dart';
 import 'models/launchConfig.dart';
+import 'package:flutter/services.dart';
+
 
 class GameOliveWindow extends StatefulWidget {
   final LaunchConfig gameLaunchConfig;
@@ -28,10 +30,25 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
   @override
   void initState() {
     super.initState();
-    initGamwLaunch();
+    if(widget.gameLaunchConfig.orientation=="landscape") {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    }
+    initGameLaunch();
   }
-
-  void initGamwLaunch() async {
+  @override
+  dispose(){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
+  }
+  void initGameLaunch() async {
     gameUrl = await Gameolive.getGameUrl(widget.gameLaunchConfig);
     setState(() {
       gameUrl = gameUrl;

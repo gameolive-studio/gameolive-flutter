@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Added support for launching in landscape mode.
+
 ## 0.0.3
 
 * Added wallet API integration.

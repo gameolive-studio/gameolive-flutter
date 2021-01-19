@@ -36,6 +36,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
         DeviceOrientation.landscapeLeft,
       ]);
     }
+    SystemChrome.setEnabledSystemUIOverlays ([]);
     initGameLaunch();
   }
   @override
@@ -46,6 +47,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }
   void initGameLaunch() async {

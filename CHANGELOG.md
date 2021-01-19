@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Feature added event delegation for game round start.
+* Bugfix for fullscreen game launch.
+
 ## 0.0.4
 
 * Added support for launching in landscape mode.

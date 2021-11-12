@@ -5,9 +5,9 @@ import './GameOliveWindow.dart';
 import './models/launchConfig.dart';
 
 class GameOliveDialogBox extends StatefulWidget {
-  final LaunchConfig gameLaunchConfig;
+  final LaunchConfig? gameLaunchConfig;
 
-  const GameOliveDialogBox({Key key, this.gameLaunchConfig}) : super(key: key);
+  const GameOliveDialogBox({Key? key, this.gameLaunchConfig}) : super(key: key);
 
   @override
   _GameOliveDialogBoxState createState() => _GameOliveDialogBoxState();
@@ -22,14 +22,14 @@ class _GameOliveDialogBoxState extends State<GameOliveDialogBox> {
       child: contentBox(context),
     );
   }
-  contentBox(context){
+
+  contentBox(context) {
     return Stack(
       children: <Widget>[
         Container(
-          child:  GameOliveWindow(
-            gameLaunchConfig: widget.gameLaunchConfig,
-          )
-        ),
+            child: GameOliveWindow(
+          gameLaunchConfig: widget.gameLaunchConfig,
+        )),
       ],
     );
   }

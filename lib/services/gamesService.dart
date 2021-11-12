@@ -38,9 +38,9 @@ Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
 }
 
 Future<String> fetchGameUrl(
-    LaunchConfig gameLaunchConfig, Config config) async {
-  String configId = gameLaunchConfig.configId;
-  String playerId = gameLaunchConfig.playerId;
+    LaunchConfig? gameLaunchConfig, Config config) async {
+  String? configId = gameLaunchConfig!.configId;
+  String? playerId = gameLaunchConfig.playerId;
   String DEFAULT_INDEX_PATH = "dist";
   final response = await http.get(
       Uri.parse(config.server +

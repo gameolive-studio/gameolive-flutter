@@ -1,3 +1,15 @@
+## 0.0.8
+
+* Updated sample app
+
+## 0.0.7
+
+* Minor build issues fixes
+
+## 0.0.6
+
+* Updated to null-safety compatibility
+
 ## 0.0.5
 
 * Feature added event delegation for game round start.

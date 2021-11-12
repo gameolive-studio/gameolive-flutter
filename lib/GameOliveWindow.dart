@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -11,36 +10,38 @@ import 'gameolive.dart';
 import 'models/launchConfig.dart';
 import 'package:flutter/services.dart';
 
-
 class GameOliveWindow extends StatefulWidget {
-  final LaunchConfig gameLaunchConfig;
-  final Function(bool) onRoundStarted;
+  final LaunchConfig? gameLaunchConfig;
+  final Function(bool)? onRoundStarted;
 
-  const GameOliveWindow({Key key, @required this.gameLaunchConfig, this.onRoundStarted}) : super(key: key);
+  const GameOliveWindow(
+      {Key? key, @required this.gameLaunchConfig, this.onRoundStarted})
+      : super(key: key);
 
   @override
   _GameOliveWindowState createState() => _GameOliveWindowState();
 }
 
 class _GameOliveWindowState extends State<GameOliveWindow> {
-  String gameUrl;
-  final Completer<WebViewController> _controller = Completer<
-      WebViewController>();
+  String? gameUrl;
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
 
   @override
   void initState() {
     super.initState();
-    if(widget.gameLaunchConfig.orientation=="landscape") {
+    if (widget.gameLaunchConfig!.orientation == "landscape") {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeRight,
         DeviceOrientation.landscapeLeft,
       ]);
     }
-    SystemChrome.setEnabledSystemUIOverlays ([]);
+    SystemChrome.setEnabledSystemUIOverlays([]);
     initGameLaunch();
   }
+
   @override
-  dispose(){
+  dispose() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -50,6 +51,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }
+
   void initGameLaunch() async {
     gameUrl = await Gameolive.getGameUrl(widget.gameLaunchConfig);
     setState(() {
@@ -62,34 +64,29 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
     return Container(
         color: Colors.grey,
         // alignment: Alignment.center,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: AspectRatio(
             aspectRatio: 16 / 9,
             child: new Container(
-                child: gameUrl == null ? null : WebView(
-                  initialUrl: gameUrl,
-                  javascriptMode: JavascriptMode.unrestricted,
-                  onWebViewCreated: (WebViewController webViewController) {
-                    _controller.complete(webViewController);
-                    _addPostScript(webViewController, context);
-                  },
-                  javascriptChannels: <JavascriptChannel>[
-                    _gameoliveChannel(context),
-                  ].toSet(),
-                ),
+                child: gameUrl == null
+                    ? null
+                    : WebView(
+                        initialUrl: gameUrl,
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                          _addPostScript(webViewController, context);
+                        },
+                        javascriptChannels: <JavascriptChannel>[
+                          _gameoliveChannel(context),
+                        ].toSet(),
+                      ),
                 decoration: new BoxDecoration(
                   shape: BoxShape.rectangle,
                   color: Colors.black,
-                )
-            ))
-    );
+                ))));
   }
 
   JavascriptChannel _gameoliveChannel(BuildContext context) {
@@ -98,14 +95,17 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
         onMessageReceived: (JavascriptMessage message) {
           // ignore: deprecated_member_use
           // sleep(Duration(seconds: 60));
-          Map<String, dynamic> event =  jsonDecode(message.message);
-          if(event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED && widget.onRoundStarted !=null){
-            widget.onRoundStarted(true);
+          Map<String, dynamic> event = jsonDecode(message.message);
+          if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
+              widget.onRoundStarted != null) {
+            widget.onRoundStarted!(true);
           }
         });
   }
 
-  void _addPostScript(WebViewController controller, BuildContext context) async {
-    await controller.evaluateJavascript('window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));};');
+  void _addPostScript(
+      WebViewController controller, BuildContext context) async {
+    await controller.evaluateJavascript(
+        'window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));};');
   }
 }

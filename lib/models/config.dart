@@ -11,26 +11,26 @@ class Config {
       : Platform.isIOS
           ? "ios"
           : "website";
-  String token = "";
-  String orderBy = "";
+  String? token = "";
+  String? orderBy = "";
   int limit = 10;
   int offset = 0;
-  String category;
+  String? category;
 
   Config(
-      {this.operatorId,
-      this.clientId,
-      this.clientSecret,
-      this.server,
-      this.static});
+      {required this.operatorId,
+      required this.clientId,
+      required this.clientSecret,
+      required this.server,
+      required this.static});
 
   factory Config.fromJson(Map<String, String> json) {
     Config _config = new Config(
-        operatorId: json['operatorId'],
-        clientId: json['clientId'],
-        clientSecret: json['clientSecret'],
-        server: json['server'],
-        static: json['static']);
+        operatorId: json['operatorId'] ?? "",
+        clientId: json['clientId'] ?? "",
+        clientSecret: json['clientSecret'] ?? "",
+        server: json['server'] ?? "",
+        static: json['static'] ?? "");
     if (json["category"] != null) {
       _config.category = json["category"];
     }

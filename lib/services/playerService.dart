@@ -4,19 +4,18 @@ import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
-
 Future<String> fetchPlayerToken(String playerUid, Config config) async {
-  final response = await http.post(config.server + '/api/player/token',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        "operator_id": config.operatorId,
-        "client_secret": config.clientSecret,
-        "client_id": config.clientId,
-        "player_uid": playerUid,
-      })
-  );
+  final response =
+      await http.post(Uri.parse(config.server + '/api/player/token'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            "operator_id": config.operatorId,
+            "client_secret": config.clientSecret,
+            "client_id": config.clientId,
+            "player_uid": playerUid,
+          }));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -24,7 +23,7 @@ Future<String> fetchPlayerToken(String playerUid, Config config) async {
     var rb = response.body;
 
     // store json data into list
-   var list = json.decode(rb);
+    var list = json.decode(rb);
 
     // iterate over the list and map each object in list to Img by calling Img.fromJson
     // Auth auth = new Auth(token: rb);

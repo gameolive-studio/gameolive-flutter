@@ -5,18 +5,17 @@ import 'package:http/http.dart' as http;
 import '../models/auth.dart';
 import '../models/config.dart';
 
-
 Future<Auth> authenticate(Config config) async {
-  final response = await http.post(config.server + '/api/auth/machine-sign-in',
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      "operator_id": config.operatorId,
-      "client_secret": config.clientSecret,
-      "client_id": config.clientId,
-    })
-  );
+  final response =
+      await http.post(Uri.parse(config.server + '/api/auth/machine-sign-in'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            "operator_id": config.operatorId,
+            "client_secret": config.clientSecret,
+            "client_id": config.clientId,
+          }));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,

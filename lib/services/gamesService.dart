@@ -63,7 +63,13 @@ Future<String> fetchGameUrl(
       String encoded = stringToBase64.encode(urlData);
       urlData = 'token=$encoded';
     }
-    String gameLink = gameLauncherResponse["gameLink"];
+    String? gameLink = null;
+    if (gameLauncherResponse['configuration']["gameLink"] != null) {
+      gameLink = gameLauncherResponse['configuration']["gameLink"];
+    } else if (gameLauncherResponse["gameLink"] != null) {
+      gameLink = gameLauncherResponse["gameLink"];
+    }
+
     if (gameLink == null || gameLink.length == 0) {
       gameLink =
           '${config.static}/${clientId}/${DEFAULT_INDEX_PATH}/index.html';

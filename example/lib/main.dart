@@ -458,8 +458,7 @@ class _MyAppState extends State<MyApp> {
                                           _launchConfig.operatorId = operatorId;
                                           _launchConfig.configId =
                                               item.configuration!.id;
-                                          _launchConfig.playerId =
-                                              "ABCD"; // unique if of the player
+                                          _launchConfig.playerId = _playerToken;
                                           setState(() {
                                             inlineLaunchConfig = _launchConfig;
                                           });
@@ -479,17 +478,19 @@ class _MyAppState extends State<MyApp> {
                                               item.configuration!.id;
                                           launchConfig.orientation =
                                               "landscape";
-                                          launchConfig.playerId =
-                                              "ABCD"; // unique if of the player
+                                          launchConfig.playerId = _playerToken;
                                           Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
+                                              context,
+                                              MaterialPageRoute(
                                                 builder: (context) =>
                                                     GameOliveView(
-                                                      launchConfig:
-                                                          launchConfig,
-                                                    )),
-                                          );
+                                                        launchConfig:
+                                                            launchConfig,
+                                                        onGoToHome: (value) {
+                                                          Navigator.pop(
+                                                              context);
+                                                        }),
+                                              ));
                                         },
                                       ),
                                       IconSlideAction(
@@ -506,7 +507,7 @@ class _MyAppState extends State<MyApp> {
                                           gameLaunchConfig.configId =
                                               item.configuration!.id;
                                           gameLaunchConfig.playerId =
-                                              "ABCD"; // unique if of the player
+                                              _playerToken; // unique if of the player
 
                                           showDialog(
                                               context: context,

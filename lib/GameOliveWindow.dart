@@ -13,9 +13,13 @@ import 'package:flutter/services.dart';
 class GameOliveWindow extends StatefulWidget {
   final LaunchConfig? gameLaunchConfig;
   final Function(bool)? onRoundStarted;
+  final Function(bool)? onGoToHome;
 
   const GameOliveWindow(
-      {Key? key, @required this.gameLaunchConfig, this.onRoundStarted})
+      {Key? key,
+      @required this.gameLaunchConfig,
+      this.onRoundStarted,
+      this.onGoToHome})
       : super(key: key);
 
   @override
@@ -81,12 +85,27 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                         },
                         javascriptChannels: <JavascriptChannel>[
                           _gameoliveChannel(context),
+                          _inGOLAppChannel(context),
                         ].toSet(),
                       ),
                 decoration: new BoxDecoration(
                   shape: BoxShape.rectangle,
                   color: Colors.black,
                 ))));
+  }
+
+  JavascriptChannel _inGOLAppChannel(BuildContext context) {
+    return JavascriptChannel(
+        name: 'InGOLApp',
+        onMessageReceived: (JavascriptMessage message) {
+          // ignore: deprecated_member_use
+          // sleep(Duration(seconds: 60));
+          Map<String, dynamic> event = jsonDecode(message.message);
+          if (event["event"] == StandardEvents.GAMEOLIVE_GAME_GOTO_HOME &&
+              widget.onGoToHome != null) {
+            widget.onGoToHome!(true);
+          }
+        });
   }
 
   JavascriptChannel _gameoliveChannel(BuildContext context) {

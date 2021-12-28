@@ -5,7 +5,10 @@ import 'package:gameolive/models/launchConfig.dart';
 
 class GameOliveView extends StatelessWidget {
   final LaunchConfig? launchConfig;
-  GameOliveView({this.launchConfig});
+  final Function(bool)? onRoundStarted;
+  final Function(bool)? onGoToHome;
+
+  GameOliveView({this.launchConfig, this.onRoundStarted, this.onGoToHome});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +16,8 @@ class GameOliveView extends StatelessWidget {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: GameOliveWindow(
-              gameLaunchConfig: launchConfig,
-            )));
+                gameLaunchConfig: launchConfig,
+                onRoundStarted: onRoundStarted,
+                onGoToHome: onGoToHome)));
   }
 }

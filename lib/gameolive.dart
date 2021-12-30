@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'models/auth.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
+import 'models/playerBalance.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
 import 'services/authService.dart';
@@ -51,13 +52,14 @@ class Gameolive {
   }
 
   /* Wallet Related API's*/
-  static Future<Transaction> getPlayerBalance(String playerUid, Config config) {
+  static Future<PlayerBalance> getPlayerBalance(
+      String playerUid, Config config) {
     return fetchPlayerBalance(playerUid, config);
   }
 
-  static Future<Transaction> depositToPlayerAccount(
+  static Future<PlayerBalance> depositToPlayerAccount(
       String playerUid, Transaction transaction, Config config) {
-    transaction.type = "dr";
+    transaction.type = "cr";
     return debitToPlayerAccount(playerUid, transaction, config);
   }
 

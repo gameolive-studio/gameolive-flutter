@@ -1,3 +1,7 @@
+## 0.0.11
+
+* Added Seaprate model for player balance.
+
 ## 0.0.10
 
 * Added support for player token in launch config to add extra security.

@@ -8,6 +8,7 @@ import 'package:gameolive/models/config.dart';
 import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
+import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/GameOliveView.dart';
 import 'package:gameolive/GameOliveDialogBox.dart';
@@ -49,6 +50,8 @@ class _MyAppState extends State<MyApp> {
   TextEditingController? _txtRefernce;
   TextEditingController? _txtRemarks;
 
+  PlayerBalance? _playerBalance;
+  String defaultPlayerId = "DEMO_USER";
   String _playerId = "DEMO_USER";
   String _playerToken = "DEMO_TOKEN";
   @override
@@ -223,7 +226,8 @@ class _MyAppState extends State<MyApp> {
                                         },
                                       ),
                                       IconSlideAction(
-                                        caption: 'Register Player',
+                                        caption:
+                                            '${_playerId == defaultPlayerId ? 'Register Player' : _playerId}: ${_playerBalance != null ? '${_playerBalance!.cash}|${_playerBalance!.currency}|${_playerBalance!.coin}' : ''}',
                                         color: Colors.indigo,
                                         icon: Icons.person_add,
                                         onTap: () {
@@ -266,12 +270,6 @@ class _MyAppState extends State<MyApp> {
                                                                       await Gameolive
                                                                           .getPlayerToken(
                                                                               _c!.text);
-                                                                  setState(() {
-                                                                    this._playerId =
-                                                                        _c!.text;
-                                                                    this._playerToken =
-                                                                        playerToken;
-                                                                  });
                                                                   Config _walletConfig = new Config(
                                                                       operatorId:
                                                                           operatorId,
@@ -283,6 +281,20 @@ class _MyAppState extends State<MyApp> {
                                                                           server,
                                                                       static:
                                                                           static);
+                                                                  PlayerBalance
+                                                                      pb =
+                                                                      await Gameolive.getPlayerBalance(
+                                                                          _c!.text,
+                                                                          _walletConfig);
+                                                                  setState(() {
+                                                                    this._playerId =
+                                                                        _c!.text;
+                                                                    this._playerToken =
+                                                                        playerToken;
+                                                                    this._playerBalance =
+                                                                        pb;
+                                                                  });
+
                                                                   var transactions =
                                                                       await Gameolive.getPlayerAccountHistory(
                                                                           this._playerId,
@@ -408,9 +420,13 @@ class _MyAppState extends State<MyApp> {
                                                                           this._playerId,
                                                                           _trx,
                                                                           _walletConfig);
-                                                                  print(
-                                                                      _newTransaction
-                                                                          .uid);
+                                                                  setState(() {
+                                                                    _playerBalance =
+                                                                        _newTransaction;
+                                                                  });
+                                                                  // print( // todo make new Model for TransactionRef.
+                                                                  //     _newTransaction
+                                                                  //         .uid);
                                                                 } catch (ex) {
                                                                   final snackBar =
                                                                       SnackBar(

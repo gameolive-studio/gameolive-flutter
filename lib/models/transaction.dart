@@ -1,3 +1,4 @@
+// todo, needs to be fixed to match wallet report
 class Transaction {
   final String? uid;
   final double? amount;

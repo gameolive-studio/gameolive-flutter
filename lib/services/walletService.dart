@@ -1,12 +1,14 @@
 import 'dart:convert';
 
+import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/models/transactionsResponse.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
-Future<Transaction> fetchPlayerBalance(String playerUid, Config config) async {
+Future<PlayerBalance> fetchPlayerBalance(
+    String playerUid, Config config) async {
   final response = await http.post(
       Uri.parse(config.server + '/api/wallet/get-player-balance'),
       headers: <String, String>{
@@ -29,7 +31,7 @@ Future<Transaction> fetchPlayerBalance(String playerUid, Config config) async {
 
     // iterate over the list and map each object in list to Img by calling Img.fromJson
     // Auth auth = new Auth(token: rb);
-    return list["balance"];
+    return PlayerBalance.fromJson(list["balance"]);
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -37,7 +39,7 @@ Future<Transaction> fetchPlayerBalance(String playerUid, Config config) async {
   }
 }
 
-Future<Transaction> debitToPlayerAccount(
+Future<PlayerBalance> debitToPlayerAccount(
     String playerUid, Transaction transaction, Config config) async {
   final response =
       await http.post(Uri.parse(config.server + '/api/wallet/transactions'),
@@ -62,8 +64,10 @@ Future<Transaction> debitToPlayerAccount(
     // If the server did return a 200 OK response,
     // then parse the JSON.
     var rb = response.body;
-    Transaction trx = Transaction.fromJson(json.decode(rb));
-    return trx;
+    var data = json.decode(rb);
+    PlayerBalance playerBalance =
+        PlayerBalance.fromJson(data["currentBalance"]);
+    return playerBalance;
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.

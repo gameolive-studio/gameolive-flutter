@@ -71,7 +71,11 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                     "Click here to launch the game",
                     style: TextStyle(fontSize: 18),
                   )),
-              // Text(widget.descriptions,style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+              Text(
+                widget.descriptions!,
+                style: TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(
                 height: 22,
               ),
@@ -89,18 +93,18 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
             ],
           ),
         ),
-        Positioned(
-          left: Constants.padding,
-          right: Constants.padding,
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            radius: Constants.avatarRadius,
-            child: ClipRRect(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(Constants.avatarRadius)),
-                child: Image.asset("assets/model.jpeg")),
-          ),
-        ),
+        // Positioned(
+        //   left: Constants.padding,
+        //   right: Constants.padding,
+        //   child: CircleAvatar(
+        //     backgroundColor: Colors.transparent,
+        //     radius: Constants.avatarRadius,
+        //     child: ClipRRect(
+        //         borderRadius:
+        //             BorderRadius.all(Radius.circular(Constants.avatarRadius)),
+        //         child: Image.asset("assets/model.jpeg")),
+        //   ),
+        // ),
       ],
     );
   }

@@ -41,6 +41,7 @@ Future<String> fetchGameUrl(
     LaunchConfig? gameLaunchConfig, Config config) async {
   String? configId = gameLaunchConfig!.configId;
   String? playerId = gameLaunchConfig.playerId;
+  String? playerToken = gameLaunchConfig.playerToken;
   String DEFAULT_INDEX_PATH = "dist";
   final response = await http.get(
       Uri.parse(config.server +
@@ -57,7 +58,7 @@ Future<String> fetchGameUrl(
     String clientId = gameLauncherResponse['configuration']['clientId'];
     String gameId = gameLauncherResponse['gameId'];
     String urlData =
-        'gameid=${gameId}&configid=${configId}&server=${config.server}&operatorid=${config.operatorId}&playerid=${playerId}';
+        'gameid=${gameId}&configid=${configId}&server=${config.server}&operatorid=${config.operatorId}&playerid=${playerId}&playertoken=${playerToken}';
     if (gameLaunchConfig.rawUrl != true) {
       Codec<String, String> stringToBase64 = utf8.fuse(base64);
       String encoded = stringToBase64.encode(urlData);

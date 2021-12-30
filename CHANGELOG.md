@@ -1,3 +1,11 @@
+## 0.0.10
+
+* Added support for player token in launch config to add extra security.
+
+## 0.0.9
+
+* Added handler for Home button and Fixed params for real play mode.
+
 ## 0.0.8
 
 * Updated sample app

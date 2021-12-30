@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
   TextEditingController? _txtRemarks;
 
   String _playerId = "DEMO_USER";
-  String _playerToken = "DEMO_USER";
+  String _playerToken = "DEMO_TOKEN";
   @override
   void initState() {
     _c = new TextEditingController();
@@ -204,8 +204,10 @@ class _MyAppState extends State<MyApp> {
                                           _launchConfig.operatorId = operatorId;
                                           _launchConfig.configId =
                                               item.configuration!.id;
-                                          _launchConfig.playerId =
-                                              "ABCD"; // unique if of the player
+                                          _launchConfig.playerId = _playerId;
+                                          _launchConfig.playerToken =
+                                              _playerToken;
+
                                           String gameLink =
                                               await Gameolive.getGameUrl(
                                                   _launchConfig);
@@ -458,7 +460,9 @@ class _MyAppState extends State<MyApp> {
                                           _launchConfig.operatorId = operatorId;
                                           _launchConfig.configId =
                                               item.configuration!.id;
-                                          _launchConfig.playerId = _playerToken;
+                                          _launchConfig.playerId = _playerId;
+                                          _launchConfig.playerToken =
+                                              _playerToken;
                                           setState(() {
                                             inlineLaunchConfig = _launchConfig;
                                           });
@@ -478,7 +482,9 @@ class _MyAppState extends State<MyApp> {
                                               item.configuration!.id;
                                           launchConfig.orientation =
                                               "landscape";
-                                          launchConfig.playerId = _playerToken;
+                                          launchConfig.playerId = _playerId;
+                                          launchConfig.playerToken =
+                                              _playerToken;
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -507,6 +513,8 @@ class _MyAppState extends State<MyApp> {
                                           gameLaunchConfig.configId =
                                               item.configuration!.id;
                                           gameLaunchConfig.playerId =
+                                              _playerId; // unique if of the player
+                                          gameLaunchConfig.playerToken =
                                               _playerToken; // unique if of the player
 
                                           showDialog(

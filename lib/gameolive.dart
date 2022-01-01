@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:gameolive/models/badgesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
+import 'package:gameolive/services/badgesService.dart';
 import 'package:gameolive/services/playerService.dart';
 import 'package:gameolive/services/walletService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,5 +67,20 @@ class Gameolive {
   static Future<TransactionsResponse> getPlayerAccountHistory(
       String playerUid, int offset, int limit, Config config) {
     return fetchPlayerAccountHistory(playerUid, offset, limit, config);
+  }
+
+  static Future<BadgesResponse> getAvailableBadges([Config? config]) async {
+    if (config == null) {
+      config = CONFIG!;
+    }
+    return fetchAvailableBadges(config);
+  }
+
+  static Future<List<String>> getBadgesEarnedByPlayer(String playerUid,
+      [Config? config]) async {
+    if (config == null) {
+      config = CONFIG!;
+    }
+    return fetchUserBadges(playerUid, config);
   }
 }

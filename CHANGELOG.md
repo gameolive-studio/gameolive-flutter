@@ -1,3 +1,7 @@
+## 0.0.13
+
+* Add initial support for badges.
+
 ## 0.0.12
 
 * Update model for wallet transactions.

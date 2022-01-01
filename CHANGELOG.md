@@ -1,3 +1,7 @@
+## 0.0.12
+
+* Update model for wallet transactions.
+
 ## 0.0.11
 
 * Added Seaprate model for player balance.

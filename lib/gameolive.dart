@@ -59,8 +59,7 @@ class Gameolive {
 
   static Future<PlayerBalance> depositToPlayerAccount(
       String playerUid, Transaction transaction, Config config) {
-    transaction.type = "cr";
-    return debitToPlayerAccount(playerUid, transaction, config);
+    return creditToPlayerWallet(playerUid, transaction, config);
   }
 
   static Future<TransactionsResponse> getPlayerAccountHistory(

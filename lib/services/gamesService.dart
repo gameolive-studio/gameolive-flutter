@@ -1,18 +1,38 @@
 import 'dart:convert';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
+import 'package:gameolive/shared/GameoliveCacheManager.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
+// GamesResponse? REF_GAMES = null;
 Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
-  final response = await http.get(
-      Uri.parse(config.server +
-          '/api/tenant/${config.operatorId}/game?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${config.limit}&offset=${config.offset}'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${config.token}',
-      });
+  String path = config.server +
+      '/api/tenant/${config.operatorId}/game?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}';
+
+  try {
+    var file = await GameoliveCacheManager.instance
+        .getSingleFile(path, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${config.token}',
+    });
+    if (file != null && await file.exists()) {
+      var res = await file.readAsString();
+
+      GamesResponse games = GamesResponse.fromJson(json.decode(res));
+      // REF_GAMES = games;
+      return games;
+    }
+  } catch (ex) {
+    print(
+        "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
+  }
+
+  final response = await http.get(Uri.parse(path), headers: <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ${config.token}',
+  });
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -28,7 +48,7 @@ Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
 
     // print(games.runtimeType); //returns List<Img>
     // print(games[0].runtimeType); //returns Img
-
+    // REF_GAMES = games;
     return games;
   } else {
     // If the server did not return a 200 OK response,

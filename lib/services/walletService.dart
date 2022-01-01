@@ -39,7 +39,7 @@ Future<PlayerBalance> fetchPlayerBalance(
   }
 }
 
-Future<PlayerBalance> debitToPlayerAccount(
+Future<PlayerBalance> creditToPlayerWallet(
     String playerUid, Transaction transaction, Config config) async {
   final response =
       await http.post(Uri.parse(config.server + '/api/wallet/transactions'),
@@ -55,9 +55,9 @@ Future<PlayerBalance> debitToPlayerAccount(
             "currency": transaction.currency,
             "coins": transaction.coins,
             "uid": transaction.uid,
-            "ref": transaction.ref,
+            "reference": transaction.reference,
             "remarks": transaction.remarks,
-            "type": transaction.type
+            "isCredit": true
           }));
 
   if (response.statusCode == 200) {

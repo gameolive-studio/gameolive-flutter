@@ -396,8 +396,9 @@ class _MyAppState extends State<MyApp> {
                                                                       coins: int.parse(
                                                                           _txtCoins!
                                                                               .text),
-                                                                      ref: _txtRefernce!
-                                                                          .text);
+                                                                      reference:
+                                                                          _txtRefernce!
+                                                                              .text);
                                                                   _trx.remarks =
                                                                       _txtRemarks!
                                                                           .text;

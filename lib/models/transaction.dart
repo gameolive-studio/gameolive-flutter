@@ -4,8 +4,9 @@ class Transaction {
   final double? amount;
   final String? currency;
   final int? coins;
-  final String? ref;
-  String? type;
+  final String? reference;
+  String? transactionTypeIdentifier;
+  String? productName;
   String? remarks;
   // String application = Platform.isAndroid? "android": Platform.isIOS? "ios" : "website";
   // String token  = "";
@@ -13,7 +14,8 @@ class Transaction {
   // int limit = 10;
   // int offset = 0;
 
-  Transaction({this.uid, this.amount, this.currency, this.coins, this.ref});
+  Transaction(
+      {this.uid, this.amount, this.currency, this.coins, this.reference});
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     Transaction _transaction = new Transaction(
@@ -21,12 +23,16 @@ class Transaction {
         amount: (json['amount']).toDouble(),
         currency: json['currency'],
         coins: json['coins'],
-        ref: json['ref']);
-    if (json['type'] != null) {
-      _transaction.type = json['type'];
+        reference: json['reference']);
+    if (json['transactionTypeIdentifier'] != null) {
+      _transaction.transactionTypeIdentifier =
+          json['transactionTypeIdentifier'];
     }
     if (json['remarks'] != null) {
       _transaction.remarks = json['remarks'];
+    }
+    if (json['productName'] != null) {
+      _transaction.remarks = json['productName'];
     }
     return _transaction;
   }

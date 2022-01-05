@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/models/transactionsResponse.dart';
+import 'package:gameolive/shared/playmode.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
 Future<PlayerBalance> fetchPlayerBalance(
-    String playerUid, Config config) async {
+    String playerUid, PlayMode playMode, Config config) async {
   final response = await http.post(
       Uri.parse(config.server + '/api/wallet/get-player-balance'),
       headers: <String, String>{
@@ -19,6 +20,7 @@ Future<PlayerBalance> fetchPlayerBalance(
         "client_secret": config.clientSecret,
         "client_id": config.clientId,
         "player_uid": playerUid,
+        "mode": playMode.toString()
       }));
 
   if (response.statusCode == 200) {
@@ -57,6 +59,9 @@ Future<PlayerBalance> creditToPlayerWallet(
             "uid": transaction.uid,
             "reference": transaction.reference,
             "remarks": transaction.remarks,
+            "productId": transaction.productId,
+            "productName": transaction.productName,
+            "sku": transaction.sku,
             "isCredit": true
           }));
 
@@ -76,8 +81,8 @@ Future<PlayerBalance> creditToPlayerWallet(
   }
 }
 
-Future<TransactionsResponse> fetchPlayerAccountHistory(
-    String playerUid, int offset, int limit, Config config) async {
+Future<TransactionsResponse> fetchPlayerAccountHistory(String playerUid,
+    PlayMode playMode, int offset, int limit, Config config) async {
   final response =
       await http.post(Uri.parse(config.server + '/api/wallet/get-transactions'),
           headers: <String, String>{
@@ -89,7 +94,8 @@ Future<TransactionsResponse> fetchPlayerAccountHistory(
             "client_id": config.clientId,
             "player_uid": playerUid,
             "offset": offset,
-            "limit": limit
+            "limit": limit,
+            "mode": playMode.toString()
           }));
 
   if (response.statusCode == 200) {

@@ -4,6 +4,7 @@ import 'package:gameolive/models/launchConfig.dart';
 import 'package:gameolive/services/badgesService.dart';
 import 'package:gameolive/services/playerService.dart';
 import 'package:gameolive/services/walletService.dart';
+import 'package:gameolive/shared/playmode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
@@ -49,14 +50,15 @@ class Gameolive {
     return fetchGameUrl(gameLaunchConfig, CONFIG!);
   }
 
-  static Future<String> getPlayerToken(String playerUid, [Config? config]) {
-    return fetchPlayerToken(playerUid, CONFIG!);
+  static Future<String> getPlayerToken(String playerUid, PlayMode playMode,
+      [Config? config]) {
+    return fetchPlayerToken(playerUid, playMode, CONFIG!);
   }
 
   /* Wallet Related API's*/
   static Future<PlayerBalance> getPlayerBalance(
-      String playerUid, Config config) {
-    return fetchPlayerBalance(playerUid, config);
+      String playerUid, PlayMode playMode, Config config) {
+    return fetchPlayerBalance(playerUid, playMode, config);
   }
 
   static Future<PlayerBalance> depositToPlayerAccount(
@@ -64,9 +66,10 @@ class Gameolive {
     return creditToPlayerWallet(playerUid, transaction, config);
   }
 
-  static Future<TransactionsResponse> getPlayerAccountHistory(
-      String playerUid, int offset, int limit, Config config) {
-    return fetchPlayerAccountHistory(playerUid, offset, limit, config);
+  static Future<TransactionsResponse> getPlayerAccountHistory(String playerUid,
+      PlayMode playMode, int offset, int limit, Config config) {
+    return fetchPlayerAccountHistory(
+        playerUid, playMode, offset, limit, config);
   }
 
   static Future<BadgesResponse> getAvailableBadges([Config? config]) async {
@@ -76,11 +79,12 @@ class Gameolive {
     return fetchAvailableBadges(config);
   }
 
-  static Future<List<String>> getBadgesEarnedByPlayer(String playerUid,
+  static Future<List<String>> getBadgesEarnedByPlayer(
+      String playerUid, PlayMode playMode,
       [Config? config]) async {
     if (config == null) {
       config = CONFIG!;
     }
-    return fetchUserBadges(playerUid, config);
+    return fetchUserBadges(playerUid, playMode, config);
   }
 }

@@ -12,6 +12,7 @@ import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/GameOliveView.dart';
 import 'package:gameolive/GameOliveDialogBox.dart';
+import 'package:gameolive/shared/playmode.dart';
 
 import 'custom_dialog_box.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -267,9 +268,11 @@ class _MyAppState extends State<MyApp> {
                                                                 try {
                                                                   String
                                                                       playerToken =
-                                                                      await Gameolive
-                                                                          .getPlayerToken(
-                                                                              _c!.text);
+                                                                      await Gameolive.getPlayerToken(
+                                                                          _c!
+                                                                              .text,
+                                                                          PlayMode
+                                                                              .real);
                                                                   Config _walletConfig = new Config(
                                                                       operatorId:
                                                                           operatorId,
@@ -284,7 +287,10 @@ class _MyAppState extends State<MyApp> {
                                                                   PlayerBalance
                                                                       pb =
                                                                       await Gameolive.getPlayerBalance(
-                                                                          _c!.text,
+                                                                          _c!
+                                                                              .text,
+                                                                          PlayMode
+                                                                              .real,
                                                                           _walletConfig);
                                                                   setState(() {
                                                                     this._playerId =
@@ -295,12 +301,14 @@ class _MyAppState extends State<MyApp> {
                                                                         pb;
                                                                   });
 
-                                                                  var transactions =
-                                                                      await Gameolive.getPlayerAccountHistory(
-                                                                          this._playerId,
-                                                                          0,
-                                                                          10,
-                                                                          _walletConfig);
+                                                                  var transactions = await Gameolive.getPlayerAccountHistory(
+                                                                      this
+                                                                          ._playerId,
+                                                                      PlayMode
+                                                                          .real,
+                                                                      0,
+                                                                      10,
+                                                                      _walletConfig);
                                                                   print(transactions
                                                                       .count);
                                                                 } catch (ex) {

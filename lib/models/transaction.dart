@@ -7,6 +7,8 @@ class Transaction {
   final String? reference;
   String? transactionTypeIdentifier;
   String? productName;
+  String? productId;
+  String? sku;
   String? remarks;
   // String application = Platform.isAndroid? "android": Platform.isIOS? "ios" : "website";
   // String token  = "";
@@ -20,7 +22,7 @@ class Transaction {
   factory Transaction.fromJson(Map<String, dynamic> json) {
     Transaction _transaction = new Transaction(
         uid: json['uid'],
-        amount: (json['amount']).toDouble(),
+        amount: json['amount'] != null ? (json['amount']).toDouble() : 0.0,
         currency: json['currency'],
         coins: json['coins'],
         reference: json['reference']);
@@ -32,8 +34,15 @@ class Transaction {
       _transaction.remarks = json['remarks'];
     }
     if (json['productName'] != null) {
-      _transaction.remarks = json['productName'];
+      _transaction.productName = json['productName'];
     }
+    if (json['productId'] != null) {
+      _transaction.productId = json['productId'];
+    }
+    if (json['sku'] != null) {
+      _transaction.sku = json['sku'];
+    }
+
     return _transaction;
   }
 }

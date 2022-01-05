@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:gameolive/shared/playmode.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
-Future<String> fetchPlayerToken(String playerUid, Config config) async {
+Future<String> fetchPlayerToken(
+    String playerUid, PlayMode playMode, Config config) async {
   final response =
       await http.post(Uri.parse(config.server + '/api/player/token'),
           headers: <String, String>{
@@ -15,6 +17,7 @@ Future<String> fetchPlayerToken(String playerUid, Config config) async {
             "client_secret": config.clientSecret,
             "client_id": config.clientId,
             "player_uid": playerUid,
+            "playMode": playMode.toString()
           }));
 
   if (response.statusCode == 200) {

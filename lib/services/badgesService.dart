@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:gameolive/models/badgesResponse.dart';
 import 'package:gameolive/shared/GameoliveCacheManager.dart';
+import 'package:gameolive/shared/playmode.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
@@ -49,9 +50,10 @@ Future<BadgesResponse> fetchAvailableBadges(Config config) async {
   }
 }
 
-Future<List<String>> fetchUserBadges(String playerUid, Config config) async {
+Future<List<String>> fetchUserBadges(
+    String playerUid, PlayMode playMode, Config config) async {
   String path = config.server +
-      '/api/tenant/${config.operatorId}/user-badges?filter[application]=${config.application}&filter[player_uid]=$playerUid&filter[category]=${config.category}';
+      '/api/tenant/${config.operatorId}/user-badges?filter[application]=${config.application}&filter[player_uid]=$playerUid&filter[category]=${config.category}&filter[playMode]=${playMode.toString()}';
 
   final response = await http.get(Uri.parse(path), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',

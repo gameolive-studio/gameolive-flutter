@@ -1,90 +1,69 @@
-import 'dart:async';
-import 'package:gameolive/models/badgesResponse.dart';
-import 'package:gameolive/models/launchConfig.dart';
-import 'package:gameolive/services/badgesService.dart';
-import 'package:gameolive/services/playerService.dart';
-import 'package:gameolive/services/walletService.dart';
-import 'package:gameolive/shared/playmode.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
-
-import 'models/auth.dart';
+import 'gameolive_platform_interface.dart';
+import 'models/badgesResponse.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
+import 'models/launchConfig.dart';
 import 'models/playerBalance.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
-import 'services/authService.dart';
-import 'services/gamesService.dart';
+import 'shared/playmode.dart';
 
+// ignore: non_constant_identifier_names
 Config? CONFIG;
 
 class Gameolive {
-  static const MethodChannel _channel = const MethodChannel('gameolive');
-
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
+  Future<String?> getPlatformVersion() {
+    return GameolivePlatform.instance.getPlatformVersion();
   }
 
-  static Future<String?> init(Config config) async {
-    final Auth auth = await authenticate(config);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (auth.token != null) {
-      await prefs.setString('token', auth.token ?? "");
-    }
-    CONFIG = config;
-    CONFIG!.token = auth.token;
-    return auth.token;
+  Future<String?> init(Config config) async {
+    return GameolivePlatform.instance.init(config);
   }
 
-  static Future<GamesResponse> getGames(int limit, int offset,
+  Future<GamesResponse> getGames(int limit, int offset,
       [Config? config]) async {
-    if (config == null) {
-      config = CONFIG!;
-    }
-    return fetchGames(limit, offset, config);
+    return GameolivePlatform.instance.getGames(limit, offset, config);
   }
 
-  static Future<String> getGameUrl(LaunchConfig? gameLaunchConfig) async {
-    return fetchGameUrl(gameLaunchConfig, CONFIG!);
+  Future<String> getGameUrl(LaunchConfig? gameLaunchConfig) async {
+    return GameolivePlatform.instance.getGameUrl(gameLaunchConfig);
   }
 
-  static Future<String> getPlayerToken(String playerUid, PlayMode playMode,
+  Future<String> getPlayerToken(String playerUid, PlayMode playMode,
       [Config? config]) {
-    return fetchPlayerToken(playerUid, playMode, CONFIG!);
+    return GameolivePlatform.instance
+        .getPlayerToken(playerUid, playMode, CONFIG!);
   }
 
   /* Wallet Related API's*/
-  static Future<PlayerBalance> getPlayerBalance(
+  Future<PlayerBalance> getPlayerBalance(
       String playerUid, PlayMode playMode, Config config) {
-    return fetchPlayerBalance(playerUid, playMode, config);
+    return GameolivePlatform.instance
+        .getPlayerBalance(playerUid, playMode, config);
   }
 
-  static Future<PlayerBalance> depositToPlayerAccount(
+  Future<PlayerBalance> depositToPlayerAccount(
       String playerUid, Transaction transaction, Config config) {
-    return creditToPlayerWallet(playerUid, transaction, config);
+    return GameolivePlatform.instance
+        .depositToPlayerAccount(playerUid, transaction, config);
   }
 
-  static Future<TransactionsResponse> getPlayerAccountHistory(String playerUid,
+  Future<TransactionsResponse> getPlayerAccountHistory(String playerUid,
       PlayMode playMode, int offset, int limit, Config config) {
-    return fetchPlayerAccountHistory(
-        playerUid, playMode, offset, limit, config);
+    return GameolivePlatform.instance
+        .getPlayerAccountHistory(playerUid, playMode, offset, limit, config);
   }
 
-  static Future<BadgesResponse> getAvailableBadges([Config? config]) async {
-    if (config == null) {
-      config = CONFIG!;
-    }
-    return fetchAvailableBadges(config);
+  Future<BadgesResponse> getAvailableBadges([Config? config]) async {
+    config ??= CONFIG!;
+    return GameolivePlatform.instance.getAvailableBadges(config);
   }
 
-  static Future<List<String>> getBadgesEarnedByPlayer(
+  Future<List<String>> getBadgesEarnedByPlayer(
       String playerUid, PlayMode playMode,
       [Config? config]) async {
-    if (config == null) {
-      config = CONFIG!;
-    }
-    return fetchUserBadges(playerUid, playMode, config);
+    config ??= CONFIG!;
+    return GameolivePlatform.instance
+        .getBadgesEarnedByPlayer(playerUid, playMode, config);
   }
 }

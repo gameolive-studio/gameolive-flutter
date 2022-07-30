@@ -1,16 +1,19 @@
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gameolive/GameOliveWindow.dart';
+import 'package:gameolive/gameolive.dart';
 import 'package:gameolive/models/launchConfig.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'constants.dart';
 
 class GameDialogBox extends StatefulWidget {
   final LaunchConfig? gameLaunchConfig;
+  final Gameolive instance;
 
-  const GameDialogBox({Key? key, this.gameLaunchConfig}) : super(key: key);
+  const GameDialogBox({
+    Key? key,
+    required this.instance,
+    required this.gameLaunchConfig,
+  }) : super(key: key);
 
   @override
   _GameDialogBoxState createState() => _GameDialogBoxState();
@@ -32,7 +35,7 @@ class _GameDialogBoxState extends State<GameDialogBox> {
   contentBox(context) {
     return Stack(
       children: <Widget>[
-        Container(
+        SizedBox(
             height: 200,
             // padding: EdgeInsets.only(left: Constants.padding,top: Constants.avatarRadius
             //     + Constants.padding, right: Constants.padding,bottom: Constants.padding
@@ -49,6 +52,7 @@ class _GameDialogBoxState extends State<GameDialogBox> {
             //     ]
             // ),
             child: GameOliveWindow(
+              instance: widget.instance,
               gameLaunchConfig: widget.gameLaunchConfig,
             )
             // Column(

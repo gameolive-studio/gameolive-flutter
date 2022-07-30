@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gameolive/shared/StandardEvents.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -12,12 +10,14 @@ import 'package:flutter/services.dart';
 
 class GameOliveWindow extends StatefulWidget {
   final LaunchConfig? gameLaunchConfig;
+  final Gameolive instance;
   final Function(bool)? onRoundStarted;
   final Function(bool)? onGoToHome;
 
   const GameOliveWindow(
       {Key? key,
-      @required this.gameLaunchConfig,
+      required this.instance,
+      required this.gameLaunchConfig,
       this.onRoundStarted,
       this.onGoToHome})
       : super(key: key);
@@ -31,6 +31,9 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
+  final initialContent =
+      '<h4> This is some hardcoded HTML code embedded inside the webview <h4> <h2> Hello world! <h2>';
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +43,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
         DeviceOrientation.landscapeLeft,
       ]);
     }
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     initGameLaunch();
   }
 
@@ -52,12 +55,14 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
+
     super.dispose();
   }
 
   void initGameLaunch() async {
-    gameUrl = await Gameolive.getGameUrl(widget.gameLaunchConfig);
+    gameUrl = await widget.instance.getGameUrl(widget.gameLaunchConfig);
     setState(() {
       gameUrl = gameUrl;
     });
@@ -72,7 +77,11 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
         height: MediaQuery.of(context).size.height,
         child: AspectRatio(
             aspectRatio: 16 / 9,
-            child: new Container(
+            child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Colors.black,
+                ),
                 child: gameUrl == null
                     ? null
                     : WebView(
@@ -83,15 +92,11 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                           _controller.complete(webViewController);
                           _addPostScript(webViewController, context);
                         },
-                        javascriptChannels: <JavascriptChannel>[
+                        javascriptChannels: <JavascriptChannel>{
                           _gameoliveChannel(context),
                           _inGOLAppChannel(context),
-                        ].toSet(),
-                      ),
-                decoration: new BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.black,
-                ))));
+                        },
+                      ))));
   }
 
   JavascriptChannel _inGOLAppChannel(BuildContext context) {

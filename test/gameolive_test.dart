@@ -1,23 +1,29 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gameolive/gameolive.dart';
+import 'package:gameolive/gameolive_platform_interface.dart';
+import 'package:gameolive/gameolive_method_channel.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+
+class MockGameolivePlatform 
+    with MockPlatformInterfaceMixin
+    implements GameolivePlatform {
+
+  @override
+  Future<String?> getPlatformVersion() => Future.value('42');
+}
 
 void main() {
-  const MethodChannel channel = MethodChannel('gameolive');
+  final GameolivePlatform initialPlatform = GameolivePlatform.instance;
 
-  TestWidgetsFlutterBinding.ensureInitialized();
-
-  setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
-    });
-  });
-
-  tearDown(() {
-    channel.setMockMethodCallHandler(null);
+  test('$MethodChannelGameolive is the default instance', () {
+    expect(initialPlatform, isInstanceOf<MethodChannelGameolive>());
   });
 
   test('getPlatformVersion', () async {
-    expect(await Gameolive.platformVersion, '42');
+    Gameolive gameolivePlugin = Gameolive();
+    MockGameolivePlatform fakePlatform = MockGameolivePlatform();
+    GameolivePlatform.instance = fakePlatform;
+  
+    expect(await gameolivePlugin.getPlatformVersion(), '42');
   });
 }

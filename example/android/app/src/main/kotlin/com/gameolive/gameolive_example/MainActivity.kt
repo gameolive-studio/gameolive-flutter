@@ -1,4 +1,4 @@
-package com.gameolive_example
+package com.gameolive.gameolive_example
 
 import io.flutter.embedding.android.FlutterActivity
 

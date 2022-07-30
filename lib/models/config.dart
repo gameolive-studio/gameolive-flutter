@@ -1,16 +1,11 @@
-import 'dart:io' show Platform;
-
 class Config {
   final String operatorId;
   final String clientId;
   final String clientSecret;
   final String server;
   final String static;
-  String application = Platform.isAndroid
-      ? "android"
-      : Platform.isIOS
-          ? "ios"
-          : "website";
+  String application = "android";
+
   String? token = "";
   String? orderBy = "";
   int limit = 10;
@@ -25,15 +20,15 @@ class Config {
       required this.static});
 
   factory Config.fromJson(Map<String, String> json) {
-    Config _config = new Config(
+    Config config = Config(
         operatorId: json['operatorId'] ?? "",
         clientId: json['clientId'] ?? "",
         clientSecret: json['clientSecret'] ?? "",
         server: json['server'] ?? "",
         static: json['static'] ?? "");
     if (json["category"] != null) {
-      _config.category = json["category"];
+      config.category = json["category"];
     }
-    return _config;
+    return config;
   }
 }

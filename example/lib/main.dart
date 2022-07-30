@@ -2,21 +2,19 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:gameolive/gameolive.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gameolive/GameOliveView.dart';
 import 'package:gameolive/GameOliveWindow.dart';
+import 'package:gameolive/gameolive.dart';
 import 'package:gameolive/models/config.dart';
 import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
 import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/transaction.dart';
-import 'package:gameolive/GameOliveView.dart';
-import 'package:gameolive/GameOliveDialogBox.dart';
 import 'package:gameolive/shared/playmode.dart';
 
 import 'custom_dialog_box.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
 import 'game_dialog_box.dart';
 
 const clientId =
@@ -30,19 +28,29 @@ const walletClientId =
 const walletClientSecret = "gol1606078109162";
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String _platformVersion = 'Unknown';
+  final _gameolivePlugin = Gameolive();
+
   List<Game>? _games;
   LaunchConfig? inlineLaunchConfig;
+  PlayerBalance? _playerBalance;
+  String defaultPlayerId = "DEMO_USER";
+  String _playerId = "DEMO_USER";
+  String _playerToken = "DEMO_TOKEN";
+
   TextEditingController? _c;
   TextEditingController? _txtTransactionId;
   TextEditingController? _txtAmount;
@@ -51,40 +59,23 @@ class _MyAppState extends State<MyApp> {
   TextEditingController? _txtRefernce;
   TextEditingController? _txtRemarks;
 
-  PlayerBalance? _playerBalance;
-  String defaultPlayerId = "DEMO_USER";
-  String _playerId = "DEMO_USER";
-  String _playerToken = "DEMO_TOKEN";
   @override
   void initState() {
-    _c = new TextEditingController();
-    _txtTransactionId = new TextEditingController();
-    _txtAmount = new TextEditingController();
-    _txtCurrency = new TextEditingController();
-    _txtCoins = new TextEditingController();
-    _txtRefernce = new TextEditingController();
-    _txtRemarks = new TextEditingController();
     super.initState();
     initPlatformState();
+    initGameOlive();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    Config config = new Config(
-        operatorId: operatorId,
-        clientId: clientId,
-        clientSecret: clientSecret,
-        server: server,
-        static: static);
-    List<Game>? games;
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
     try {
-      await Gameolive.init(config); // initialize the library
-
-      GamesResponse gamesResponse =
-          await Gameolive.getGames(10, 0); // get first 10 games
-      games = gamesResponse.games;
+      platformVersion = await _gameolivePlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
-      // Log exception and report studio@gameolive.com
+      platformVersion = 'Failed to get platform version.';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -93,73 +84,63 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
+      _platformVersion = platformVersion;
+    });
+  }
+
+  initGameOlive() async {
+    Config config = Config(
+        operatorId: operatorId,
+        clientId: clientId,
+        clientSecret: clientSecret,
+        server: server,
+        static: static);
+    List<Game>? games;
+    try {
+      await _gameolivePlugin.init(config); // initialize the library
+
+      GamesResponse gamesResponse =
+          await _gameolivePlugin.getGames(10, 0); // get first 10 games
+      games = gamesResponse.games;
+    } on PlatformException {
+      // Log exception and report studio@gameolive.com
+    }
+
+    setState(() {
       _games = games;
     });
   }
-  //
-  // _showDialog() async {
-  //   await showDialog<String>(
-  //     context: context,
-  //     child: new _SystemPadding(child: new AlertDialog(
-  //       contentPadding: const EdgeInsets.all(16.0),
-  //       content: new Row(
-  //         children: <Widget>[
-  //           new Expanded(
-  //             child: new TextField(
-  //               autofocus: true,
-  //               decoration: new InputDecoration(
-  //                   labelText: 'Full Name', hintText: 'eg. John Smith'),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //       actions: <Widget>[
-  //         new FlatButton(
-  //             child: const Text('CANCEL'),
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             }),
-  //         new FlatButton(
-  //             child: const Text('OPEN'),
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             })
-  //       ],
-  //     ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          key: _scaffoldKey,
           appBar: AppBar(
-            title: const Text('Example app'),
+            title: const Text('Plugin example app'),
           ),
           body: _games == null
               ? const Text('Execution is in progress')
-              : _games!.length == 0
+              : _games!.isEmpty
                   ? const Text(
                       'There are no games in the offerings for this platform')
                   : Column(
                       children: [
                         inlineLaunchConfig == null
-                            ? SizedBox()
+                            ? const SizedBox()
                             : SizedBox(
                                 width: 720,
                                 height: 220,
                                 child: GameOliveWindow(
+                                  instance: _gameolivePlugin,
                                   gameLaunchConfig: inlineLaunchConfig,
                                   onRoundStarted: (started) => {
                                     _scaffoldKey.currentState!.showSnackBar(
                                       SnackBar(
-                                          content: Text(" started ${started}")),
+                                          content: Text(" started $started")),
                                     )
                                   },
                                 )),
-                        SizedBox(),
+                        const SizedBox(),
                         Flexible(
                             child: ListView.builder(
                                 // Let the ListView know how many items it needs to build.
@@ -169,52 +150,29 @@ class _MyAppState extends State<MyApp> {
                                 itemBuilder: (context, index) {
                                   final item = _games![index];
                                   return Slidable(
-                                    actionPane: SlidableDrawerActionPane(),
+                                    actionPane:
+                                        const SlidableDrawerActionPane(),
                                     actionExtentRatio: 0.25,
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: ListTile(
-                                        leading: Text(('<')),
-                                        title: Text(item.title ?? ""),
-                                        trailing: Text(('Swipe >')),
-                                        subtitle: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(item.configuration!.id ?? ""),
-                                            Text('enabled: ${item.enabled}'),
-                                            Text('label: ${item.label}'),
-                                            Text('Rating: ${item.rating}'),
-                                            Text(
-                                                'playerCount: ${item.playerCount}'),
-                                            Text(
-                                                'description: ${item.description}')
-                                          ],
-                                        ),
-                                      ),
-                                    ),
                                     actions: <Widget>[
                                       IconSlideAction(
                                         caption: 'Game Link',
                                         color: Colors.blue,
                                         icon: Icons.archive,
                                         onTap: () async {
-                                          LaunchConfig _launchConfig =
-                                              new LaunchConfig();
-                                          _launchConfig.server = server;
-                                          _launchConfig.static = static;
-                                          _launchConfig.operatorId = operatorId;
-                                          _launchConfig.configId =
+                                          LaunchConfig launchConfig =
+                                              LaunchConfig();
+                                          launchConfig.server = server;
+                                          launchConfig.static = static;
+                                          launchConfig.operatorId = operatorId;
+                                          launchConfig.configId =
                                               item.configuration!.id;
-                                          _launchConfig.playerId = _playerId;
-                                          _launchConfig.playerToken =
+                                          launchConfig.playerId = _playerId;
+                                          launchConfig.playerToken =
                                               _playerToken;
 
                                           String gameLink =
-                                              await Gameolive.getGameUrl(
-                                                  _launchConfig);
+                                              await _gameolivePlugin
+                                                  .getGameUrl(launchConfig);
                                           showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
@@ -255,7 +213,7 @@ class _MyAppState extends State<MyApp> {
                                                         children: [
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Player UID'),
                                                             controller: _c,
@@ -268,12 +226,12 @@ class _MyAppState extends State<MyApp> {
                                                                 try {
                                                                   String
                                                                       playerToken =
-                                                                      await Gameolive.getPlayerToken(
+                                                                      await _gameolivePlugin.getPlayerToken(
                                                                           _c!
                                                                               .text,
                                                                           PlayMode
                                                                               .real);
-                                                                  Config _walletConfig = new Config(
+                                                                  Config walletConfig = Config(
                                                                       operatorId:
                                                                           operatorId,
                                                                       clientId:
@@ -286,35 +244,34 @@ class _MyAppState extends State<MyApp> {
                                                                           static);
                                                                   PlayerBalance
                                                                       pb =
-                                                                      await Gameolive.getPlayerBalance(
+                                                                      await _gameolivePlugin.getPlayerBalance(
                                                                           _c!
                                                                               .text,
                                                                           PlayMode
                                                                               .real,
-                                                                          _walletConfig);
+                                                                          walletConfig);
                                                                   setState(() {
-                                                                    this._playerId =
+                                                                    _playerId =
                                                                         _c!.text;
-                                                                    this._playerToken =
+                                                                    _playerToken =
                                                                         playerToken;
-                                                                    this._playerBalance =
+                                                                    _playerBalance =
                                                                         pb;
                                                                   });
 
-                                                                  var transactions = await Gameolive.getPlayerAccountHistory(
-                                                                      this
-                                                                          ._playerId,
+                                                                  var transactions = await _gameolivePlugin.getPlayerAccountHistory(
+                                                                      _playerId,
                                                                       PlayMode
                                                                           .real,
                                                                       0,
                                                                       10,
-                                                                      _walletConfig);
+                                                                      walletConfig);
                                                                   print(transactions
                                                                       .count);
                                                                 } catch (ex) {
-                                                                  final snackBar =
+                                                                  const snackBar =
                                                                       SnackBar(
-                                                                    duration: const Duration(
+                                                                    duration: Duration(
                                                                         seconds:
                                                                             10),
                                                                     content: Text(
@@ -326,21 +283,21 @@ class _MyAppState extends State<MyApp> {
                                                                           snackBar);
                                                                 }
                                                               },
-                                                              child: Text(
+                                                              color: const Color(
+                                                                  0xFF1BC0C5),
+                                                              child: const Text(
                                                                 "Register Or Login Player",
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white),
                                                               ),
-                                                              color: const Color(
-                                                                  0xFF1BC0C5),
                                                             ),
                                                           ),
                                                           Text(
-                                                              'Current Player: ${_playerId}'),
+                                                              'Current Player: $_playerId'),
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Transaction UID'),
                                                             controller:
@@ -348,7 +305,7 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Amount'),
                                                             controller:
@@ -356,7 +313,7 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Currency'),
                                                             controller:
@@ -364,7 +321,7 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Coins'),
                                                             controller:
@@ -372,7 +329,7 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Reference'),
                                                             controller:
@@ -380,7 +337,7 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           TextField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                                     hintText:
                                                                         'Remarks'),
                                                             controller:
@@ -392,7 +349,7 @@ class _MyAppState extends State<MyApp> {
                                                               onPressed:
                                                                   () async {
                                                                 try {
-                                                                  Transaction _trx = new Transaction(
+                                                                  Transaction trx = Transaction(
                                                                       uid: _txtTransactionId!
                                                                           .text,
                                                                       amount: double.parse(
@@ -407,13 +364,13 @@ class _MyAppState extends State<MyApp> {
                                                                       reference:
                                                                           _txtRefernce!
                                                                               .text);
-                                                                  _trx.remarks =
+                                                                  trx.remarks =
                                                                       _txtRemarks!
                                                                           .text;
                                                                   // Create new configuration with service account with Wallet Manager permissions.
                                                                   // it is recommended to no give wallet manager permissions to Game Admin or other permissions as it might risk the exploitation of wallet
                                                                   // it is highly recommended to use wallet manager service account for server to server request and not to use in client application, but if you wish to use it on client side for simplicity you can do it at your own risk
-                                                                  Config _walletConfig = new Config(
+                                                                  Config walletConfig = Config(
                                                                       operatorId:
                                                                           operatorId,
                                                                       clientId:
@@ -424,22 +381,22 @@ class _MyAppState extends State<MyApp> {
                                                                           server,
                                                                       static:
                                                                           static);
-                                                                  var _newTransaction =
-                                                                      await Gameolive.depositToPlayerAccount(
-                                                                          this._playerId,
-                                                                          _trx,
-                                                                          _walletConfig);
+                                                                  var newTransaction =
+                                                                      await _gameolivePlugin.depositToPlayerAccount(
+                                                                          _playerId,
+                                                                          trx,
+                                                                          walletConfig);
                                                                   setState(() {
                                                                     _playerBalance =
-                                                                        _newTransaction;
+                                                                        newTransaction;
                                                                   });
                                                                   // print( // todo make new Model for TransactionRef.
                                                                   //     _newTransaction
                                                                   //         .uid);
                                                                 } catch (ex) {
-                                                                  final snackBar =
+                                                                  const snackBar =
                                                                       SnackBar(
-                                                                    duration: const Duration(
+                                                                    duration: Duration(
                                                                         seconds:
                                                                             10),
                                                                     content: Text(
@@ -451,14 +408,14 @@ class _MyAppState extends State<MyApp> {
                                                                           snackBar);
                                                                 }
                                                               },
-                                                              child: Text(
+                                                              color: const Color(
+                                                                  0xFF1BC0C5),
+                                                              child: const Text(
                                                                 "Deposit to Player wallet",
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white),
                                                               ),
-                                                              color: const Color(
-                                                                  0xFF1BC0C5),
                                                             ),
                                                           ),
                                                         ],
@@ -478,18 +435,18 @@ class _MyAppState extends State<MyApp> {
                                         color: Colors.blue,
                                         icon: Icons.more_horiz,
                                         onTap: () async {
-                                          LaunchConfig _launchConfig =
-                                              new LaunchConfig();
-                                          _launchConfig.server = server;
-                                          _launchConfig.static = static;
-                                          _launchConfig.operatorId = operatorId;
-                                          _launchConfig.configId =
+                                          LaunchConfig launchConfig =
+                                              LaunchConfig();
+                                          launchConfig.server = server;
+                                          launchConfig.static = static;
+                                          launchConfig.operatorId = operatorId;
+                                          launchConfig.configId =
                                               item.configuration!.id;
-                                          _launchConfig.playerId = _playerId;
-                                          _launchConfig.playerToken =
+                                          launchConfig.playerId = _playerId;
+                                          launchConfig.playerToken =
                                               _playerToken;
                                           setState(() {
-                                            inlineLaunchConfig = _launchConfig;
+                                            inlineLaunchConfig = launchConfig;
                                           });
                                         },
                                       ),
@@ -499,7 +456,7 @@ class _MyAppState extends State<MyApp> {
                                         icon: Icons.arrow_forward,
                                         onTap: () {
                                           LaunchConfig launchConfig =
-                                              new LaunchConfig();
+                                              LaunchConfig();
                                           launchConfig.server = server;
                                           launchConfig.static = static;
                                           launchConfig.operatorId = operatorId;
@@ -515,6 +472,8 @@ class _MyAppState extends State<MyApp> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     GameOliveView(
+                                                        instance:
+                                                            _gameolivePlugin,
                                                         launchConfig:
                                                             launchConfig,
                                                         onGoToHome: (value) {
@@ -530,7 +489,7 @@ class _MyAppState extends State<MyApp> {
                                         icon: Icons.add_to_photos,
                                         onTap: () {
                                           LaunchConfig gameLaunchConfig =
-                                              new LaunchConfig();
+                                              LaunchConfig();
                                           gameLaunchConfig.server = server;
                                           gameLaunchConfig.static = static;
                                           gameLaunchConfig.operatorId =
@@ -547,12 +506,37 @@ class _MyAppState extends State<MyApp> {
                                               builder: (BuildContext context) {
 //                             return GameOliveDialogBox(gameLaunchConfig: gameLaunchConfig);
                                                 return GameDialogBox(
+                                                    instance: _gameolivePlugin,
                                                     gameLaunchConfig:
                                                         gameLaunchConfig);
                                               });
                                         },
                                       ),
                                     ],
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: ListTile(
+                                        leading: const Text(('<')),
+                                        title: Text(item.title ?? ""),
+                                        trailing: const Text(('Swipe >')),
+                                        subtitle: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(item.configuration!.id ?? ""),
+                                            Text('enabled: ${item.enabled}'),
+                                            Text('label: ${item.label}'),
+                                            Text('Rating: ${item.rating}'),
+                                            Text(
+                                                'playerCount: ${item.playerCount}'),
+                                            Text(
+                                                'description: ${item.description}')
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 })),
                       ],

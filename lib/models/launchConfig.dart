@@ -5,6 +5,7 @@ class LaunchConfig {
   String? static;
   String? playerId;
   String? playerToken;
+  String? currency;
   String? launchType;
   String? gameContainerId;
   bool? rawUrl;

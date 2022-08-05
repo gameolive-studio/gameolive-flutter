@@ -8,8 +8,8 @@ import '../models/config.dart';
 
 // GamesResponse? REF_GAMES = null;
 Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
-  String path = config.server +
-      '/api/tenant/${config.operatorId}/game?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}';
+  String path =
+      '${config.server}/api/tenant/${config.operatorId}/game?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}';
 
   try {
     var file = await GameoliveCacheManager.instance
@@ -17,7 +17,7 @@ Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${config.token}',
     });
-    if (file != null && await file.exists()) {
+    if (await file.exists()) {
       var res = await file.readAsString();
 
       GamesResponse games = GamesResponse.fromJson(json.decode(res));
@@ -62,10 +62,11 @@ Future<String> fetchGameUrl(
   String? configId = gameLaunchConfig!.configId;
   String? playerId = gameLaunchConfig.playerId;
   String? playerToken = gameLaunchConfig.playerToken;
-  String DEFAULT_INDEX_PATH = "dist";
+  String? currency = gameLaunchConfig.currency;
+  String DEFAULTINDEXPATH = "dist";
   final response = await http.get(
-      Uri.parse(config.server +
-          '/api/launch-config/${config.operatorId}/${configId}'),
+      Uri.parse(
+          '${config.server}/api/launch-config/${config.operatorId}/$configId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       });
@@ -77,25 +78,22 @@ Future<String> fetchGameUrl(
     var gameLauncherResponse = json.decode(rb) as Map<String, dynamic>;
     String clientId = gameLauncherResponse['configuration']['clientId'];
     String gameId = gameLauncherResponse['gameId'];
+    String server = gameLauncherResponse['configuration']['server'];
     String urlData =
-        'gameid=${gameId}&configid=${configId}&server=${config.server}&operatorid=${config.operatorId}&playerid=${playerId}&playertoken=${playerToken}';
+        'gameid=$gameId&configid=$configId&server=$server&operatorid=${config.operatorId}&playerid=$playerId&playertoken=$playerToken&currency=$currency';
     if (gameLaunchConfig.rawUrl != true) {
       Codec<String, String> stringToBase64 = utf8.fuse(base64);
       String encoded = stringToBase64.encode(urlData);
       urlData = 'token=$encoded';
     }
-    String? gameLink = null;
+    String? gameLink;
     if (gameLauncherResponse['configuration']["gameLink"] != null) {
       gameLink = gameLauncherResponse['configuration']["gameLink"];
     } else if (gameLauncherResponse["gameLink"] != null) {
       gameLink = gameLauncherResponse["gameLink"];
     }
 
-    if (gameLink == null || gameLink.length == 0) {
-      gameLink =
-          '${config.static}/${clientId}/${DEFAULT_INDEX_PATH}/index.html';
-    }
-    return '${gameLink}?${urlData}';
+    return '$gameLink?$urlData';
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.

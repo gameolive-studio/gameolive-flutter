@@ -49,14 +49,14 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
 
   @override
   dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+    //     overlays: SystemUiOverlay.values);
 
     super.dispose();
   }
@@ -130,6 +130,6 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
   void _addPostScript(
       WebViewController controller, BuildContext context) async {
     await controller.evaluateJavascript(
-        'window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));};');
+        'window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));}; document.body.style.setProperty("background","transparent")');
   }
 }

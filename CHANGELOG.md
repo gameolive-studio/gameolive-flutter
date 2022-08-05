@@ -1,3 +1,7 @@
+## 0.0.15
+
+* Update initial support for playmode.
+
 ## 0.0.14
 
 * Add initial support for playmode.

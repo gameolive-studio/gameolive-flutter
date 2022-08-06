@@ -1,3 +1,7 @@
+## 0.0.16
+
+* Added events for GAMEOLIVE_BALANCE_CHANGE, GAMEOLIVE_USER_ACHIEVEMENTS_UPDATE and GAMEOLIVE_GAME_ROUND_ENDED.
+* 
 ## 0.0.15
 
 * Update initial support for playmode.

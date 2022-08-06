@@ -8,19 +8,27 @@ import 'gameolive.dart';
 import 'models/launchConfig.dart';
 import 'package:flutter/services.dart';
 
+import 'models/playerBalance.dart';
+
 class GameOliveWindow extends StatefulWidget {
   final LaunchConfig? gameLaunchConfig;
   final Gameolive instance;
   final Function(bool)? onRoundStarted;
+  final Function(bool)? onRoundEnded;
   final Function(bool)? onGoToHome;
+  final Function(PlayerBalance)? onBalanceChange;
+  final Function(bool)? onUserAchievementsUpdate;
 
-  const GameOliveWindow(
-      {Key? key,
-      required this.instance,
-      required this.gameLaunchConfig,
-      this.onRoundStarted,
-      this.onGoToHome})
-      : super(key: key);
+  const GameOliveWindow({
+    Key? key,
+    required this.instance,
+    required this.gameLaunchConfig,
+    this.onRoundStarted,
+    this.onRoundEnded,
+    this.onGoToHome,
+    this.onBalanceChange,
+    this.onUserAchievementsUpdate,
+  }) : super(key: key);
 
   @override
   _GameOliveWindowState createState() => _GameOliveWindowState();
@@ -85,7 +93,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                 child: gameUrl == null
                     ? null
                     : WebView(
-                        initialUrl: gameUrl,
+                        initialUrl: "http://192.168.0.105:4200/slot.html",
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
@@ -109,6 +117,23 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
           if (event["event"] == StandardEvents.GAMEOLIVE_GAME_GOTO_HOME &&
               widget.onGoToHome != null) {
             widget.onGoToHome!(true);
+          }
+          if (event["event"] == StandardEvents.GAMEOLIVE_BALANCE_CHANGE &&
+              widget.onBalanceChange != null) {
+            widget.onBalanceChange!(PlayerBalance.fromJson(event));
+          }
+          if (event["event"] ==
+                  StandardEvents.GAMEOLIVE_USER_ACHIEVEMENTS_UPDATE &&
+              widget.onUserAchievementsUpdate != null) {
+            widget.onUserAchievementsUpdate!(true);
+          }
+          if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
+              widget.onRoundStarted != null) {
+            widget.onRoundStarted!(true);
+          }
+          if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_ENDED &&
+              widget.onRoundEnded != null) {
+            widget.onRoundEnded!(true);
           }
         });
   }

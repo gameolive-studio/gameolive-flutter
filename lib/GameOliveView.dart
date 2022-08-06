@@ -3,18 +3,26 @@ import 'package:gameolive/GameOliveWindow.dart';
 import 'package:gameolive/models/launchConfig.dart';
 
 import 'gameolive.dart';
+import 'models/playerBalance.dart';
 
 class GameOliveView extends StatelessWidget {
   final LaunchConfig? launchConfig;
   final Gameolive instance;
   final Function(bool)? onRoundStarted;
+  final Function(bool)? onRoundEnded;
   final Function(bool)? onGoToHome;
+  final Function(PlayerBalance)? onBalanceChange;
+  final Function(bool)? onUserAchievementsUpdate;
 
-  const GameOliveView(
-      {this.launchConfig,
-      required this.instance,
-      this.onRoundStarted,
-      this.onGoToHome});
+  const GameOliveView({
+    this.launchConfig,
+    required this.instance,
+    this.onRoundStarted,
+    this.onRoundEnded,
+    this.onGoToHome,
+    this.onBalanceChange,
+    this.onUserAchievementsUpdate,
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +33,9 @@ class GameOliveView extends StatelessWidget {
                 instance: instance,
                 gameLaunchConfig: launchConfig,
                 onRoundStarted: onRoundStarted,
-                onGoToHome: onGoToHome)));
+                onGoToHome: onGoToHome,
+                onRoundEnded: onRoundEnded,
+                onBalanceChange: onBalanceChange,
+                onUserAchievementsUpdate: onUserAchievementsUpdate)));
   }
 }

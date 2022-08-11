@@ -3,6 +3,7 @@ import 'package:gameolive/GameOliveWindow.dart';
 import 'package:gameolive/models/launchConfig.dart';
 
 import 'gameolive.dart';
+import 'models/player_achievement.dart';
 import 'models/playerBalance.dart';
 
 class GameOliveView extends StatelessWidget {
@@ -12,7 +13,7 @@ class GameOliveView extends StatelessWidget {
   final Function(bool)? onRoundEnded;
   final Function(bool)? onGoToHome;
   final Function(PlayerBalance)? onBalanceChange;
-  final Function(bool)? onUserAchievementsUpdate;
+  final Function(List<PlayerAchievement>)? onUserAchievementsUpdate;
 
   const GameOliveView({
     this.launchConfig,

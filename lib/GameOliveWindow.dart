@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gameolive/models/player_achievement.dart';
 import 'package:gameolive/shared/StandardEvents.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'gameolive.dart';
@@ -17,7 +18,7 @@ class GameOliveWindow extends StatefulWidget {
   final Function(bool)? onRoundEnded;
   final Function(bool)? onGoToHome;
   final Function(PlayerBalance)? onBalanceChange;
-  final Function(bool)? onUserAchievementsUpdate;
+  final Function(List<PlayerAchievement>)? onUserAchievementsUpdate;
 
   const GameOliveWindow({
     Key? key,
@@ -93,7 +94,7 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                 child: gameUrl == null
                     ? null
                     : WebView(
-                        initialUrl: "http://192.168.0.105:4200/slot.html",
+                        initialUrl: gameUrl,
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
@@ -125,7 +126,16 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
           if (event["event"] ==
                   StandardEvents.GAMEOLIVE_USER_ACHIEVEMENTS_UPDATE &&
               widget.onUserAchievementsUpdate != null) {
-            widget.onUserAchievementsUpdate!(true);
+            List<PlayerAchievement> achievements = [];
+            var list = event["achievements"];
+            achievements = list == null
+                ? achievements
+                : list
+                    .map<PlayerAchievement>(
+                        (i) => PlayerAchievement.fromJson(i))
+                    .toList();
+
+            widget.onUserAchievementsUpdate!(achievements);
           }
           if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
               widget.onRoundStarted != null) {

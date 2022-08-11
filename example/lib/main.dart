@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
   PlayerBalance? _playerBalance;
   String defaultPlayerId = "DEMO_USER";
   String _playerId = "DEMO_USER";
-  String _playerToken = "DEMO_TOKEN";
+  String _playerToken = "";
 
   TextEditingController? _c;
   TextEditingController? _txtTransactionId;
@@ -472,14 +472,21 @@ class _MyAppState extends State<MyApp> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     GameOliveView(
-                                                        instance:
-                                                            _gameolivePlugin,
-                                                        launchConfig:
-                                                            launchConfig,
-                                                        onGoToHome: (value) {
-                                                          Navigator.pop(
-                                                              context);
-                                                        }),
+                                                  instance: _gameolivePlugin,
+                                                  launchConfig: launchConfig,
+                                                  onGoToHome: (value) {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  onBalanceChange: (balace) {
+                                                    debugPrint(
+                                                        "balance update");
+                                                  },
+                                                  onUserAchievementsUpdate:
+                                                      (achievements) {
+                                                    debugPrint(
+                                                        "achievements update");
+                                                  },
+                                                ),
                                               ));
                                         },
                                       ),

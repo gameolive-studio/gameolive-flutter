@@ -17,7 +17,11 @@ class PlayerAchievement {
     progress = json['progress'];
     progressPct = double.tryParse(json['progressPct'] ?? "0");
     isAcknowledged = json['isAcknowledged'];
-    validUpto = DateTime.tryParse(json['validUpto']);
+
+    if (json['validUpto'] != null) {
+      validUpto = DateTime.tryParse(json['validUpto'] ?? "");
+    }
+
     achievementIdentifier = json['achievementIdentifier'];
     achievement = json['achievement'] != null
         ? Achievement.fromJson(json['achievement'])

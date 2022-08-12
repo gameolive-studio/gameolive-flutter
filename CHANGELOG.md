@@ -1,3 +1,8 @@
+## 0.0.19
+
+* Bugfix achievements parsing.
+
+
 ## 0.0.18
 
 * Bugfix initial achievements and acknowledge achievement.

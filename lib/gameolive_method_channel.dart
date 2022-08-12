@@ -15,6 +15,7 @@ import 'models/auth.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
 import 'models/playerBalance.dart';
+import 'models/player_achievement.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
 import 'services/authService.dart';
@@ -98,5 +99,21 @@ class MethodChannelGameolive extends GameolivePlatform {
       [Config? config]) async {
     config ??= CONFIG!;
     return fetchUserBadges(playerUid, playMode, config);
+  }
+
+  @override
+  Future<List<PlayerAchievement>> getPlayerAchievements(String playerUid,
+      [Config? config]) async {
+    config ??= CONFIG!;
+    return fetchPlayerAchievements(playerUid, config);
+  }
+
+  @override
+  Future<dynamic> acknowledgePlayerAchievement(
+      String achievementId, String playerUid,
+      [Config? config]) async {
+    config ??= CONFIG!;
+    return setAcknowledgementOfPlayerAchievement(
+        achievementId, playerUid, config);
   }
 }

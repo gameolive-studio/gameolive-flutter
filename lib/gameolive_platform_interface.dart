@@ -1,3 +1,4 @@
+import 'package:gameolive/models/player_achievement.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'gameolive_method_channel.dart';
@@ -82,5 +83,18 @@ abstract class GameolivePlatform extends PlatformInterface {
     config ??= CONFIG!;
     throw UnimplementedError(
         'getBadgesEarnedByPlayer() has not been implemented.');
+  }
+
+  Future<List<PlayerAchievement>> getPlayerAchievements(String playerUid,
+      [Config? config]) async {
+    config ??= CONFIG!;
+    throw UnimplementedError('getAvailableBadges() has not been implemented.');
+  }
+
+  Future<dynamic> acknowledgePlayerAchievement(
+      String achievementId, String playerUid,
+      [Config? config]) async {
+    config ??= CONFIG!;
+    throw UnimplementedError('getAvailableBadges() has not been implemented.');
   }
 }

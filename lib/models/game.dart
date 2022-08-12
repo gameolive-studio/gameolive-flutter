@@ -1,10 +1,9 @@
 import 'photo.dart';
-import 'configuration.dart';
 
 class Game {
   final String? id;
   final String? title;
-  final Configuration? configuration;
+  final String? configuration;
   final List<Photo>? photos;
   String? label;
   String? description;
@@ -21,7 +20,7 @@ class Game {
     var game = Game(
         id: json['id'],
         title: json['name'],
-        configuration: Configuration.fromJson(json['configuration']),
+        configuration: json['configuration'],
         photos: photos);
 
     json['label'] != null ? game.label = json['label'] : game.label = "";

@@ -4,6 +4,7 @@ import 'models/config.dart';
 import 'models/gamesResponse.dart';
 import 'models/launchConfig.dart';
 import 'models/playerBalance.dart';
+import 'models/player_achievement.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
 import 'shared/playmode.dart';
@@ -52,6 +53,18 @@ class Gameolive {
       PlayMode playMode, int offset, int limit, Config config) {
     return GameolivePlatform.instance
         .getPlayerAccountHistory(playerUid, playMode, offset, limit, config);
+  }
+
+  Future<List<PlayerAchievement>> getPlayerAchievements(String playerUid,
+      [Config? config]) async {
+    return GameolivePlatform.instance.getPlayerAchievements(playerUid, config);
+  }
+
+  Future<dynamic> acknowledgePlayerAchievement(
+      String achievementId, String playerUid,
+      [Config? config]) async {
+    return GameolivePlatform.instance
+        .acknowledgePlayerAchievement(achievementId, playerUid, config);
   }
 
   Future<BadgesResponse> getAvailableBadges([Config? config]) async {

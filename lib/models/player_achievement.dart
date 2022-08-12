@@ -1,5 +1,6 @@
 class PlayerAchievement {
   num? progress;
+  double? progressPct;
   bool? isAcknowledged;
   DateTime? validUpto;
   String? achievementIdentifier;
@@ -14,8 +15,9 @@ class PlayerAchievement {
 
   PlayerAchievement.fromJson(Map<String, dynamic> json) {
     progress = json['progress'];
+    progressPct = double.tryParse(json['progressPct'] ?? "0");
     isAcknowledged = json['isAcknowledged'];
-    validUpto = json['validUpto'];
+    validUpto = DateTime.tryParse(json['validUpto']);
     achievementIdentifier = json['achievementIdentifier'];
     achievement = json['achievement'] != null
         ? Achievement.fromJson(json['achievement'])
@@ -23,8 +25,9 @@ class PlayerAchievement {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['progress'] = progress;
+    data['progressPct'] = progressPct;
     data['isAcknowledged'] = isAcknowledged;
     data['validUpto'] = validUpto;
     data['achievementIdentifier'] = achievementIdentifier;
@@ -88,7 +91,7 @@ class Achievement {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['identifier'] = identifier;
     data['title'] = title;

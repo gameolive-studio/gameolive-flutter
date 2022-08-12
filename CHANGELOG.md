@@ -1,3 +1,7 @@
+## 0.0.18
+
+* Bugfix initial achievements and acknowledge achievement.
+* 
 ## 0.0.17
 
 * Bugfix GAMEOLIVE_USER_ACHIEVEMENTS_UPDATE to respond list of achievements.

@@ -9,7 +9,7 @@ import '../models/config.dart';
 // GamesResponse? REF_GAMES = null;
 Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
   String path =
-      '${config.server}/api/tenant/${config.operatorId}/game?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}';
+      '${config.server}/api/tenant/${config.operatorId}/active-games?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}&cachekey=test';
 
   try {
     var file = await GameoliveCacheManager.instance

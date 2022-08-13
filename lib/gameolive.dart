@@ -33,7 +33,7 @@ class Gameolive {
   Future<String> getPlayerToken(String playerUid, PlayMode playMode,
       [Config? config]) {
     return GameolivePlatform.instance
-        .getPlayerToken(playerUid, playMode, CONFIG!);
+        .getPlayerToken(playerUid, playMode, config);
   }
 
   /* Wallet Related API's*/

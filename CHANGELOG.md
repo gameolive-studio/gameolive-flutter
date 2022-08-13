@@ -1,3 +1,7 @@
+## 0.0.20
+
+* Bugfix get player token.
+
 ## 0.0.19
 
 * Bugfix achievements parsing.

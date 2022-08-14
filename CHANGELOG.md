@@ -1,3 +1,7 @@
+## 0.0.21
+
+* Added player action notify api
+
 ## 0.0.20
 
 * Bugfix get player token.

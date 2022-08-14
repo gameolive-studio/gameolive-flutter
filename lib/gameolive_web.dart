@@ -6,7 +6,6 @@ import 'dart:html' as html show window;
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import 'gameolive.dart';
 import 'gameolive_method_channel.dart';
 import 'gameolive_platform_interface.dart';
 
@@ -15,8 +14,10 @@ import 'models/config.dart';
 import 'models/gamesResponse.dart';
 import 'models/launchConfig.dart';
 import 'models/playerBalance.dart';
+import 'models/player_achievement.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
+import 'services/playerService.dart';
 import 'shared/playmode.dart';
 
 // ignore: non_constant_identifier_names
@@ -57,14 +58,14 @@ class GameoliveWeb extends GameolivePlatform {
   @override
   Future<String> getPlayerToken(String playerUid, PlayMode playMode,
       [Config? config]) {
-    return gameolive.getPlayerToken(playerUid, playMode, CONFIG!);
+    return gameolive.getPlayerToken(playerUid, playMode, config);
   }
 
   /* Wallet Related API's*/
   @override
   Future<PlayerBalance> getPlayerBalance(
-      String playerUid, PlayMode playMode, Config config) {
-    return gameolive.getPlayerBalance(playerUid, playMode, config);
+      String playerToken, String playerUid, PlayMode playMode, Config config) {
+    return gameolive.getPlayerBalance(playerToken, playerUid, playMode, config);
   }
 
   @override
@@ -93,5 +94,11 @@ class GameoliveWeb extends GameolivePlatform {
     config ??= CONFIG!;
     return gameolive.getBadgesEarnedByPlayer(playerUid, playMode, config);
   }
-  
+
+  @override
+  Future<List<PlayerAchievement>> notifyPlayerAction(
+      String playerToken, String playerUid, String action, String value,
+      [Config? config]) {
+    return gameolive.notifyPlayerAction(playerToken, playerUid, action, value, config);
+  }
 }

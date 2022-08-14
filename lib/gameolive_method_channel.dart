@@ -64,14 +64,15 @@ class MethodChannelGameolive extends GameolivePlatform {
   @override
   Future<String> getPlayerToken(String playerUid, PlayMode playMode,
       [Config? config]) {
-    return fetchPlayerToken(playerUid, playMode, CONFIG!);
+    config ??= CONFIG!;
+    return fetchPlayerToken(playerUid, playMode, config);
   }
 
   /* Wallet Related API's*/
   @override
   Future<PlayerBalance> getPlayerBalance(
-      String playerUid, PlayMode playMode, Config config) {
-    return fetchPlayerBalance(playerUid, playMode, config);
+      String playerToken, String playerUid, PlayMode playMode, Config config) {
+    return fetchPlayerBalance(playerToken, playerUid, playMode, config);
   }
 
   @override
@@ -102,18 +103,27 @@ class MethodChannelGameolive extends GameolivePlatform {
   }
 
   @override
-  Future<List<PlayerAchievement>> getPlayerAchievements(String playerUid,
+  Future<List<PlayerAchievement>> getPlayerAchievements(
+      String playerToken, String playerUid,
       [Config? config]) async {
     config ??= CONFIG!;
-    return fetchPlayerAchievements(playerUid, config);
+    return fetchPlayerAchievements(playerToken, playerUid, config);
   }
 
   @override
   Future<dynamic> acknowledgePlayerAchievement(
-      String achievementId, String playerUid,
+      String playerToken, String playerUid, String achievementId,
       [Config? config]) async {
     config ??= CONFIG!;
     return setAcknowledgementOfPlayerAchievement(
-        achievementId, playerUid, config);
+        playerToken, playerUid, achievementId, config);
+  }
+
+  @override
+  Future<List<PlayerAchievement>> notifyPlayerAction(
+      String playerToken, String playerUid, String action, String value,
+      [Config? config]) {
+    config ??= CONFIG!;
+    return registerPlayerAction(playerToken, playerUid, action, value, config);
   }
 }

@@ -40,7 +40,7 @@ Future<String> fetchPlayerToken(
 }
 
 Future<List<PlayerAchievement>> fetchPlayerAchievements(
-    String playerUid, Config config) async {
+    String playerToken, String playerUid, Config config) async {
   final response = await http.post(
       Uri.parse(
           '${config.server}/api/tenant/${config.operatorId}/get-player-achievements/$playerUid'),
@@ -51,7 +51,8 @@ Future<List<PlayerAchievement>> fetchPlayerAchievements(
         "operator_id": config.operatorId,
         "client_secret": config.clientSecret,
         "client_id": config.clientId,
-        "player_uid": playerUid,
+        "player_id": playerUid,
+        "token": playerToken,
         //  "playMode": playMode.toString()
       }));
 
@@ -79,8 +80,8 @@ Future<List<PlayerAchievement>> fetchPlayerAchievements(
   }
 }
 
-Future<dynamic> setAcknowledgementOfPlayerAchievement(
-    String achievementId, String playerUid, Config config) async {
+Future<dynamic> setAcknowledgementOfPlayerAchievement(String playerToken,
+    String playerUid, String achievementId, Config config) async {
   final response = await http.post(
       Uri.parse(
           '${config.server}/api/tenant/${config.operatorId}/acknowledge-player-achievement/$playerUid/$achievementId'),
@@ -91,7 +92,8 @@ Future<dynamic> setAcknowledgementOfPlayerAchievement(
         "operator_id": config.operatorId,
         "client_secret": config.clientSecret,
         "client_id": config.clientId,
-        "player_uid": playerUid,
+        "player_id": playerUid,
+        "token": playerToken,
         // "playMode": playMode.toString()
       }));
 
@@ -110,5 +112,46 @@ Future<dynamic> setAcknowledgementOfPlayerAchievement(
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to get Player Achievements');
+  }
+}
+
+Future<List<PlayerAchievement>> registerPlayerAction(String playerToken,
+    String playerUid, String action, String value, Config config) async {
+  final response = await http.post(
+      Uri.parse(
+          '${config.server}/api/tenant/${config.operatorId}/register-player-action/$playerUid/$action'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "operator_id": config.operatorId,
+        "client_secret": config.clientSecret,
+        "client_id": config.clientId,
+        "player_id": playerUid,
+        "token": playerToken,
+        "value": value
+      }));
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    var rb = response.body;
+
+    // store json data into list
+    var list = json.decode(rb);
+    List<PlayerAchievement> achievements = [];
+
+    achievements = list == null
+        ? achievements
+        : list
+            .map<PlayerAchievement>((i) => PlayerAchievement.fromJson(i))
+            .toList();
+    // iterate over the list and map each object in list to Img by calling Img.fromJson
+    // Auth auth = new Auth(token: rb);
+    return achievements;
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to notify Player Action');
   }
 }

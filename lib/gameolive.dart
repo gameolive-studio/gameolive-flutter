@@ -38,9 +38,9 @@ class Gameolive {
 
   /* Wallet Related API's*/
   Future<PlayerBalance> getPlayerBalance(
-      String playerUid, PlayMode playMode, Config config) {
+      String playerToken, String playerUid, PlayMode playMode, Config config) {
     return GameolivePlatform.instance
-        .getPlayerBalance(playerUid, playMode, config);
+        .getPlayerBalance(playerToken, playerUid, playMode, config);
   }
 
   Future<PlayerBalance> depositToPlayerAccount(
@@ -55,16 +55,25 @@ class Gameolive {
         .getPlayerAccountHistory(playerUid, playMode, offset, limit, config);
   }
 
-  Future<List<PlayerAchievement>> getPlayerAchievements(String playerUid,
+  Future<List<PlayerAchievement>> getPlayerAchievements(
+      String playerToken, String playerUid,
       [Config? config]) async {
-    return GameolivePlatform.instance.getPlayerAchievements(playerUid, config);
+    return GameolivePlatform.instance
+        .getPlayerAchievements(playerToken, playerUid, config);
   }
 
   Future<dynamic> acknowledgePlayerAchievement(
-      String achievementId, String playerUid,
+      String playerToken, String playerUid, String achievementId,
+      [Config? config]) async {
+    return GameolivePlatform.instance.acknowledgePlayerAchievement(
+        playerToken, playerUid, achievementId, config);
+  }
+
+  Future<List<PlayerAchievement>> notifyPlayerAction(
+      String playerToken, String playerUid, String action, String value,
       [Config? config]) async {
     return GameolivePlatform.instance
-        .acknowledgePlayerAchievement(achievementId, playerUid, config);
+        .notifyPlayerAction(playerToken, playerUid, action, value, config);
   }
 
   Future<BadgesResponse> getAvailableBadges([Config? config]) async {

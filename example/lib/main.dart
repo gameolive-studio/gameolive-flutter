@@ -11,6 +11,7 @@ import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
 import 'package:gameolive/models/playerBalance.dart';
+import 'package:gameolive/models/player_achievement.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/shared/playmode.dart';
 
@@ -51,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   String _playerId = "DEMO_USER";
   String _playerToken = "";
 
-  TextEditingController? _c;
+  final TextEditingController _txtPlayerUid = TextEditingController();
   TextEditingController? _txtTransactionId;
   TextEditingController? _txtAmount;
   TextEditingController? _txtCurrency;
@@ -165,7 +166,7 @@ class _MyAppState extends State<MyApp> {
                                           launchConfig.static = static;
                                           launchConfig.operatorId = operatorId;
                                           launchConfig.configId =
-                                              item.configuration!.id;
+                                              item.configuration;
                                           launchConfig.playerId = _playerId;
                                           launchConfig.playerToken =
                                               _playerToken;
@@ -216,7 +217,8 @@ class _MyAppState extends State<MyApp> {
                                                                 const InputDecoration(
                                                                     hintText:
                                                                         'Player UID'),
-                                                            controller: _c,
+                                                            controller:
+                                                                _txtPlayerUid,
                                                           ),
                                                           SizedBox(
                                                             width: 320.0,
@@ -224,13 +226,12 @@ class _MyAppState extends State<MyApp> {
                                                               onPressed:
                                                                   () async {
                                                                 try {
-                                                                  String
-                                                                      playerToken =
-                                                                      await _gameolivePlugin.getPlayerToken(
-                                                                          _c!
-                                                                              .text,
-                                                                          PlayMode
-                                                                              .real);
+                                                                  String playerToken = await _gameolivePlugin.getPlayerToken(
+                                                                      _txtPlayerUid
+                                                                          .text,
+                                                                      PlayMode
+                                                                          .real);
+
                                                                   Config walletConfig = Config(
                                                                       operatorId:
                                                                           operatorId,
@@ -242,32 +243,53 @@ class _MyAppState extends State<MyApp> {
                                                                           server,
                                                                       static:
                                                                           static);
-                                                                  PlayerBalance
-                                                                      pb =
-                                                                      await _gameolivePlugin.getPlayerBalance(
-                                                                          _c!
+                                                                  PlayerBalance pb = await _gameolivePlugin.getPlayerBalance(
+                                                                      playerToken,
+                                                                      _txtPlayerUid
+                                                                          .text,
+                                                                      PlayMode
+                                                                          .real,
+                                                                      walletConfig);
+                                                                  List<PlayerAchievement>
+                                                                      achievements =
+                                                                      await _gameolivePlugin.notifyPlayerAction(
+                                                                          playerToken,
+                                                                          _txtPlayerUid
                                                                               .text,
-                                                                          PlayMode
-                                                                              .real,
-                                                                          walletConfig);
+                                                                          "FIRST_TIME",
+                                                                          "1");
+
+                                                                  List<PlayerAchievement>
+                                                                      allAchievements =
+                                                                      await _gameolivePlugin
+                                                                          .getPlayerAchievements(
+                                                                    playerToken,
+                                                                    _txtPlayerUid
+                                                                        .text,
+                                                                  );
+
+                                                                  // dynamic status = await _gameolivePlugin.acknowledgePlayerAchievement(
+                                                                  //     "123456", _playerId);
+
                                                                   setState(() {
                                                                     _playerId =
-                                                                        _c!.text;
+                                                                        _txtPlayerUid
+                                                                            .text;
                                                                     _playerToken =
                                                                         playerToken;
                                                                     _playerBalance =
                                                                         pb;
                                                                   });
 
-                                                                  var transactions = await _gameolivePlugin.getPlayerAccountHistory(
-                                                                      _playerId,
-                                                                      PlayMode
-                                                                          .real,
-                                                                      0,
-                                                                      10,
-                                                                      walletConfig);
-                                                                  print(transactions
-                                                                      .count);
+                                                                  // var transactions = await _gameolivePlugin.getPlayerAccountHistory(
+                                                                  //     _playerId,
+                                                                  //     PlayMode
+                                                                  //         .real,
+                                                                  //     0,
+                                                                  //     10,
+                                                                  //     walletConfig);
+                                                                  // print(transactions
+                                                                  //     .count);
                                                                 } catch (ex) {
                                                                   const snackBar =
                                                                       SnackBar(
@@ -441,7 +463,7 @@ class _MyAppState extends State<MyApp> {
                                           launchConfig.static = static;
                                           launchConfig.operatorId = operatorId;
                                           launchConfig.configId =
-                                              item.configuration!.id;
+                                              item.configuration;
                                           launchConfig.playerId = _playerId;
                                           launchConfig.playerToken =
                                               _playerToken;
@@ -461,7 +483,7 @@ class _MyAppState extends State<MyApp> {
                                           launchConfig.static = static;
                                           launchConfig.operatorId = operatorId;
                                           launchConfig.configId =
-                                              item.configuration!.id;
+                                              item.configuration;
                                           launchConfig.orientation =
                                               "landscape";
                                           launchConfig.playerId = _playerId;
@@ -502,7 +524,7 @@ class _MyAppState extends State<MyApp> {
                                           gameLaunchConfig.operatorId =
                                               operatorId;
                                           gameLaunchConfig.configId =
-                                              item.configuration!.id;
+                                              item.configuration;
                                           gameLaunchConfig.playerId =
                                               _playerId; // unique if of the player
                                           gameLaunchConfig.playerToken =
@@ -532,7 +554,7 @@ class _MyAppState extends State<MyApp> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(item.configuration!.id ?? ""),
+                                            Text(item.configuration ?? ""),
                                             Text('enabled: ${item.enabled}'),
                                             Text('label: ${item.label}'),
                                             Text('Rating: ${item.rating}'),

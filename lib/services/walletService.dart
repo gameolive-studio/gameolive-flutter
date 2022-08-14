@@ -8,20 +8,21 @@ import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
-Future<PlayerBalance> fetchPlayerBalance(
-    String playerUid, PlayMode playMode, Config config) async {
-  final response = await http.post(
-      Uri.parse(config.server + '/api/wallet/get-player-balance'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        "operator_id": config.operatorId,
-        "client_secret": config.clientSecret,
-        "client_id": config.clientId,
-        "player_uid": playerUid,
-        "mode": playMode.toString()
-      }));
+Future<PlayerBalance> fetchPlayerBalance(String playerToken, String playerUid,
+    PlayMode playMode, Config config) async {
+  final response =
+      await http.post(Uri.parse('${config.server}/api/player/get-balance'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            "operator_id": config.operatorId,
+            "client_secret": config.clientSecret,
+            "client_id": config.clientId,
+            "player_id": playerUid,
+            "mode": playMode.toString(),
+            "token": playerToken,
+          }));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -44,7 +45,7 @@ Future<PlayerBalance> fetchPlayerBalance(
 Future<PlayerBalance> creditToPlayerWallet(
     String playerUid, Transaction transaction, Config config) async {
   final response =
-      await http.post(Uri.parse(config.server + '/api/wallet/transactions'),
+      await http.post(Uri.parse('${config.server}/api/wallet/transactions'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -84,7 +85,7 @@ Future<PlayerBalance> creditToPlayerWallet(
 Future<TransactionsResponse> fetchPlayerAccountHistory(String playerUid,
     PlayMode playMode, int offset, int limit, Config config) async {
   final response =
-      await http.post(Uri.parse(config.server + '/api/wallet/get-transactions'),
+      await http.post(Uri.parse('${config.server}/api/wallet/get-transactions'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },

@@ -56,7 +56,7 @@ abstract class GameolivePlatform extends PlatformInterface {
 
   /* Wallet Related API's*/
   Future<PlayerBalance> getPlayerBalance(
-      String playerUid, PlayMode playMode, Config config) {
+      String playerToken, String playerUid, PlayMode playMode, Config config) {
     throw UnimplementedError('getPlayerBalance() has not been implemented.');
   }
 
@@ -73,28 +73,31 @@ abstract class GameolivePlatform extends PlatformInterface {
   }
 
   Future<BadgesResponse> getAvailableBadges([Config? config]) async {
-    config ??= CONFIG!;
     throw UnimplementedError('getAvailableBadges() has not been implemented.');
   }
 
   Future<List<String>> getBadgesEarnedByPlayer(
       String playerUid, PlayMode playMode,
       [Config? config]) async {
-    config ??= CONFIG!;
     throw UnimplementedError(
         'getBadgesEarnedByPlayer() has not been implemented.');
   }
 
-  Future<List<PlayerAchievement>> getPlayerAchievements(String playerUid,
+  Future<List<PlayerAchievement>> getPlayerAchievements(
+      String playerToken, String playerUid,
       [Config? config]) async {
-    config ??= CONFIG!;
     throw UnimplementedError('getAvailableBadges() has not been implemented.');
   }
 
   Future<dynamic> acknowledgePlayerAchievement(
-      String achievementId, String playerUid,
+      String playerToken, String playerUid, String achievementId,
       [Config? config]) async {
-    config ??= CONFIG!;
+    throw UnimplementedError('getAvailableBadges() has not been implemented.');
+  }
+
+  Future<List<PlayerAchievement>> notifyPlayerAction(
+      String playerToken, String playerUid, String action, String value,
+      [Config? config]) async {
     throw UnimplementedError('getAvailableBadges() has not been implemented.');
   }
 }

@@ -258,15 +258,16 @@ class _MyAppState extends State<MyApp> {
                                                                               .text,
                                                                           "FIRST_TIME",
                                                                           "1");
-
-                                                                  List<PlayerAchievement>
-                                                                      allAchievements =
-                                                                      await _gameolivePlugin
-                                                                          .getPlayerAchievements(
-                                                                    playerToken,
-                                                                    _txtPlayerUid
-                                                                        .text,
-                                                                  );
+                                                                  debugPrint(
+                                                                      "eddwdweded");
+                                                                  // List<PlayerAchievement>
+                                                                  //     allAchievements =
+                                                                  //     await _gameolivePlugin
+                                                                  //         .getPlayerAchievements(
+                                                                  //   playerToken,
+                                                                  //   _txtPlayerUid
+                                                                  //       .text,
+                                                                  // );
 
                                                                   // dynamic status = await _gameolivePlugin.acknowledgePlayerAchievement(
                                                                   //     "123456", _playerId);
@@ -508,6 +509,9 @@ class _MyAppState extends State<MyApp> {
                                                     debugPrint(
                                                         "achievements update");
                                                   },
+                                                  onGameOliveWindowCreated: (GameOliveGameController gamecontroller){
+                                                    gamecontroller.openGameMenu();
+                                                  }
                                                 ),
                                               ));
                                         },

@@ -9,21 +9,24 @@ import 'models/playerBalance.dart';
 class GameOliveView extends StatelessWidget {
   final LaunchConfig? launchConfig;
   final Gameolive instance;
+  final String? additionalQueryString;
   final Function(bool)? onRoundStarted;
   final Function(bool)? onRoundEnded;
   final Function(bool)? onGoToHome;
   final Function(PlayerBalance)? onBalanceChange;
   final Function(List<PlayerAchievement>)? onUserAchievementsUpdate;
+  final GameOliveGameControllerCallback? onGameOliveWindowCreated;
 
-  const GameOliveView({
-    this.launchConfig,
-    required this.instance,
-    this.onRoundStarted,
-    this.onRoundEnded,
-    this.onGoToHome,
-    this.onBalanceChange,
-    this.onUserAchievementsUpdate,
-  });
+  const GameOliveView(
+      {this.launchConfig,
+      required this.instance,
+      this.additionalQueryString,
+      this.onRoundStarted,
+      this.onRoundEnded,
+      this.onGoToHome,
+      this.onBalanceChange,
+      this.onUserAchievementsUpdate,
+      this.onGameOliveWindowCreated});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,10 +36,12 @@ class GameOliveView extends StatelessWidget {
             child: GameOliveWindow(
                 instance: instance,
                 gameLaunchConfig: launchConfig,
+                additionalQueryString: additionalQueryString,
                 onRoundStarted: onRoundStarted,
                 onGoToHome: onGoToHome,
                 onRoundEnded: onRoundEnded,
                 onBalanceChange: onBalanceChange,
-                onUserAchievementsUpdate: onUserAchievementsUpdate)));
+                onUserAchievementsUpdate: onUserAchievementsUpdate,
+                onGameOliveWindowCreated: onGameOliveWindowCreated)));
   }
 }

@@ -11,25 +11,32 @@ import 'package:flutter/services.dart';
 
 import 'models/playerBalance.dart';
 
+typedef GameOliveGameControllerCallback = void Function(
+    GameOliveGameController controller);
+
 class GameOliveWindow extends StatefulWidget {
   final LaunchConfig? gameLaunchConfig;
   final Gameolive instance;
+  final String? additionalQueryString;
   final Function(bool)? onRoundStarted;
   final Function(bool)? onRoundEnded;
   final Function(bool)? onGoToHome;
   final Function(PlayerBalance)? onBalanceChange;
   final Function(List<PlayerAchievement>)? onUserAchievementsUpdate;
+  final GameOliveGameControllerCallback? onGameOliveWindowCreated;
 
-  const GameOliveWindow({
-    Key? key,
-    required this.instance,
-    required this.gameLaunchConfig,
-    this.onRoundStarted,
-    this.onRoundEnded,
-    this.onGoToHome,
-    this.onBalanceChange,
-    this.onUserAchievementsUpdate,
-  }) : super(key: key);
+  const GameOliveWindow(
+      {Key? key,
+      required this.instance,
+      required this.gameLaunchConfig,
+      this.additionalQueryString,
+      this.onRoundStarted,
+      this.onRoundEnded,
+      this.onGoToHome,
+      this.onBalanceChange,
+      this.onUserAchievementsUpdate,
+      this.onGameOliveWindowCreated})
+      : super(key: key);
 
   @override
   _GameOliveWindowState createState() => _GameOliveWindowState();
@@ -37,8 +44,7 @@ class GameOliveWindow extends StatefulWidget {
 
 class _GameOliveWindowState extends State<GameOliveWindow> {
   String? gameUrl;
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  WebViewController? _controller;
 
   final initialContent =
       '<h4> This is some hardcoded HTML code embedded inside the webview <h4> <h2> Hello world! <h2>';
@@ -94,12 +100,21 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
                 child: gameUrl == null
                     ? null
                     : WebView(
-                        initialUrl: gameUrl,
+                        initialUrl:
+                            "$gameUrl&${widget.additionalQueryString ?? ''}",
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
-                          _controller.complete(webViewController);
+                          // _controller.complete(webViewController);
+                          _controller = webViewController;
                           _addPostScript(webViewController, context);
+
+                          final GameOliveGameController controller =
+                              GameOliveGameController(_controller!);
+
+                          if (widget.onGameOliveWindowCreated != null) {
+                            widget.onGameOliveWindowCreated!(controller);
+                          }
                         },
                         javascriptChannels: <JavascriptChannel>{
                           _gameoliveChannel(context),
@@ -164,7 +179,36 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
 
   void _addPostScript(
       WebViewController controller, BuildContext context) async {
-    await controller.evaluateJavascript(
+    await _controller!.runJavascript(
         'window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));}; document.body.style.setProperty("background","transparent")');
+  }
+}
+
+class GameOliveGameController {
+  final WebViewController _controller;
+  GameOliveGameController(this._controller);
+
+  Future<void> openGameMenu() async {
+    await _controller.runJavascript('window.golApi.openGameMenu();');
+  }
+
+  Future<void> closeGameMenu() async {
+    await _controller.runJavascript('window.golApi.closeGameMenu();');
+  }
+
+  Future<void> pauseGame() async {
+    await _controller.runJavascript('window.golApi.pauseGame();');
+  }
+
+  Future<void> resumePausedGame() async {
+    await _controller.runJavascript('window.golApi.resumePausedGame();');
+  }
+
+  Future<void> reloadBalance() async {
+    await _controller.runJavascript('window.golApi.reloadBalance();');
+  }
+
+  Future<void> reloadGame() async {
+    await _controller.runJavascript('window.golApi.reloadGame();');
   }
 }

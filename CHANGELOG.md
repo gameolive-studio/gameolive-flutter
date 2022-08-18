@@ -1,3 +1,6 @@
+## 0.0.23
+
+* Added game controller.
 ## 0.0.22
 
 * Updated acknowledge achievement.

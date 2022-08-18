@@ -111,7 +111,7 @@ class MethodChannelGameolive extends GameolivePlatform {
   }
 
   @override
-  Future<dynamic> acknowledgePlayerAchievement(
+  Future<List<PlayerAchievement>> acknowledgePlayerAchievement(
       String playerToken, String playerUid, String achievementId,
       [Config? config]) async {
     config ??= CONFIG!;

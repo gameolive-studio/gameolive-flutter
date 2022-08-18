@@ -1,4 +1,5 @@
 class PlayerAchievement {
+  String? id;
   num? progress;
   double? progressPct;
   bool? isAcknowledged;
@@ -7,13 +8,15 @@ class PlayerAchievement {
   Achievement? achievement;
 
   PlayerAchievement(
-      {this.progress,
+      {this.id,
+      this.progress,
       this.isAcknowledged,
       this.validUpto,
       this.achievementIdentifier,
       this.achievement});
 
   PlayerAchievement.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     progress = json['progress'];
     progressPct = double.tryParse(json['progressPct'] ?? "0");
     isAcknowledged = json['isAcknowledged'];
@@ -30,6 +33,7 @@ class PlayerAchievement {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
     data['progress'] = progress;
     data['progressPct'] = progressPct;
     data['isAcknowledged'] = isAcknowledged;

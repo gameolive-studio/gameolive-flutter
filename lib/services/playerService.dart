@@ -80,8 +80,11 @@ Future<List<PlayerAchievement>> fetchPlayerAchievements(
   }
 }
 
-Future<dynamic> setAcknowledgementOfPlayerAchievement(String playerToken,
-    String playerUid, String achievementId, Config config) async {
+Future<List<PlayerAchievement>> setAcknowledgementOfPlayerAchievement(
+    String playerToken,
+    String playerUid,
+    String achievementId,
+    Config config) async {
   final response = await http.post(
       Uri.parse(
           '${config.server}/api/tenant/${config.operatorId}/acknowledge-player-achievement/$playerUid/$achievementId'),
@@ -103,11 +106,17 @@ Future<dynamic> setAcknowledgementOfPlayerAchievement(String playerToken,
     var rb = response.body;
 
     // store json data into list
-    var status = json.decode(rb);
+    var list = json.decode(rb);
+    List<PlayerAchievement> achievements = [];
 
+    achievements = list == null
+        ? achievements
+        : list
+            .map<PlayerAchievement>((i) => PlayerAchievement.fromJson(i))
+            .toList();
     // iterate over the list and map each object in list to Img by calling Img.fromJson
     // Auth auth = new Auth(token: rb);
-    return status;
+    return achievements;
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.

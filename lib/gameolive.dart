@@ -62,7 +62,7 @@ class Gameolive {
         .getPlayerAchievements(playerToken, playerUid, config);
   }
 
-  Future<dynamic> acknowledgePlayerAchievement(
+  Future<List<PlayerAchievement>> acknowledgePlayerAchievement(
       String playerToken, String playerUid, String achievementId,
       [Config? config]) async {
     return GameolivePlatform.instance.acknowledgePlayerAchievement(

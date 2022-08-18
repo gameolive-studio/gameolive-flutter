@@ -89,7 +89,7 @@ abstract class GameolivePlatform extends PlatformInterface {
     throw UnimplementedError('getAvailableBadges() has not been implemented.');
   }
 
-  Future<dynamic> acknowledgePlayerAchievement(
+  Future<List<PlayerAchievement>> acknowledgePlayerAchievement(
       String playerToken, String playerUid, String achievementId,
       [Config? config]) async {
     throw UnimplementedError('getAvailableBadges() has not been implemented.');

@@ -1,3 +1,7 @@
+## 0.0.22
+
+* Updated acknowledge achievement.
+  
 ## 0.0.21
 
 * Added player action notify api

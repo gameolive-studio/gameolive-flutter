@@ -106,10 +106,13 @@ class _MyAppState extends State<MyApp> {
       GamesResponse gamesResponse =
           await _gameolivePlugin.getGames(10, 0); // get first 10 games
       games = gamesResponse.games;
-
-      List<Leader> leaders = await _gameolivePlugin.getLeaderBoard(
-          _playerToken, _playerId, "TEST_CHALLENGE_ID", 5);
-      debugPrint('Leaders: ${leaders.length}');
+      try {
+        List<Leader> leaders = await _gameolivePlugin.getLeaderBoard(
+            _playerToken, _playerId, "TEST_CHALLENGE_ID", 5);
+        debugPrint('Leaders: ${leaders.length}');
+      } catch (ex) {
+        debugPrint('Leaders: Error');
+      }
     } on PlatformException {
       // Log exception and report studio@gameolive.com
     }

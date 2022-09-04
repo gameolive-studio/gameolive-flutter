@@ -38,8 +38,8 @@ class _IFrameWidgetState extends State<IFrameWidget> {
 
   @override
   void initState() {
-    _iframeElement.height = '500';
-    _iframeElement.width = '500';
+    _iframeElement.height = '100%';
+    _iframeElement.width = '100%';
     _iframeElement.src = widget.initialUrl;
     //  'https://mdxjs.com/docs/getting-started';
     _iframeElement.style.border = 'none';
@@ -51,9 +51,16 @@ class _IFrameWidgetState extends State<IFrameWidget> {
       'iframeElement',
       (int viewId) => _iframeElement,
     );
-    Future.delayed(const Duration(seconds: 10), () {
+    Future.delayed(const Duration(microseconds: 500), () {
       var iframeElement = html.document.getElementById('gameolive-game-frame')
           as html.IFrameElement;
+      iframeElement.contentWindow!.location.href = widget.initialUrl;
+    });
+
+    Future.delayed(const Duration(seconds: 5), () {
+      var iframeElement = html.document.getElementById('gameolive-game-frame')
+          as html.IFrameElement;
+
       html.window.addEventListener("message", (html.Event event) {
         var data = (event as html.MessageEvent).data;
         Map<String, dynamic> eventData = jsonDecode(data);
@@ -61,7 +68,6 @@ class _IFrameWidgetState extends State<IFrameWidget> {
       });
       final GameOliveGameController controller =
           IframeGameOliveGameController(iframeElement.contentWindow!);
-
       if (widget.onGameOliveWindowCreated != null) {
         widget.onGameOliveWindowCreated!(controller);
       }
@@ -71,6 +77,13 @@ class _IFrameWidgetState extends State<IFrameWidget> {
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _iframeElement.src = "";
+    super.dispose();
   }
 
   final Widget _iframeWidget = HtmlElementView(

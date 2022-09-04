@@ -1,3 +1,6 @@
+## 0.0.24
+
+* Added web mode support.
 ## 0.0.23
 
 * Added game controller.

@@ -80,7 +80,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
               ),
               Align(
                 alignment: Alignment.bottomRight,
-                child: FlatButton(
+                child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

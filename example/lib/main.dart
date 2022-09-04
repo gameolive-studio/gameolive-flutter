@@ -14,6 +14,7 @@ import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/player_achievement.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/shared/playmode.dart';
+import 'package:get/get.dart';
 
 import 'custom_dialog_box.dart';
 import 'game_dialog_box.dart';
@@ -135,9 +136,12 @@ class _MyAppState extends State<MyApp> {
                                   instance: _gameolivePlugin,
                                   gameLaunchConfig: inlineLaunchConfig,
                                   onRoundStarted: (started) => {
-                                    _scaffoldKey.currentState!.showSnackBar(
-                                      SnackBar(
-                                          content: Text(" started $started")),
+                                    Get.snackbar(
+                                      " started $started",
+                                      " started $started",
+                                      icon: const Icon(Icons.person,
+                                          color: Colors.white),
+                                      snackPosition: SnackPosition.BOTTOM,
                                     )
                                   },
                                 )),
@@ -222,7 +226,8 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           SizedBox(
                                                             width: 320.0,
-                                                            child: RaisedButton(
+                                                            child:
+                                                                ElevatedButton(
                                                               onPressed:
                                                                   () async {
                                                                 try {
@@ -292,22 +297,22 @@ class _MyAppState extends State<MyApp> {
                                                                   // print(transactions
                                                                   //     .count);
                                                                 } catch (ex) {
-                                                                  const snackBar =
-                                                                      SnackBar(
-                                                                    duration: Duration(
-                                                                        seconds:
-                                                                            10),
-                                                                    content: Text(
-                                                                        'Exception while getting plater token!'),
+                                                                  Get.snackbar(
+                                                                    'Exception while getting plater token!',
+                                                                    'Exception while getting plater token!',
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .person,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    snackPosition:
+                                                                        SnackPosition
+                                                                            .BOTTOM,
                                                                   );
-                                                                  _scaffoldKey
-                                                                      .currentState!
-                                                                      .showSnackBar(
-                                                                          snackBar);
                                                                 }
                                                               },
-                                                              color: const Color(
-                                                                  0xFF1BC0C5),
+                                                              // color: const Color(
+                                                              //     0xFF1BC0C5),
                                                               child: const Text(
                                                                 "Register Or Login Player",
                                                                 style: TextStyle(
@@ -368,7 +373,8 @@ class _MyAppState extends State<MyApp> {
                                                           ),
                                                           SizedBox(
                                                             width: 320.0,
-                                                            child: RaisedButton(
+                                                            child:
+                                                                ElevatedButton(
                                                               onPressed:
                                                                   () async {
                                                                 try {
@@ -417,22 +423,22 @@ class _MyAppState extends State<MyApp> {
                                                                   //     _newTransaction
                                                                   //         .uid);
                                                                 } catch (ex) {
-                                                                  const snackBar =
-                                                                      SnackBar(
-                                                                    duration: Duration(
-                                                                        seconds:
-                                                                            10),
-                                                                    content: Text(
-                                                                        'Exception while making player transaction!'),
+                                                                  Get.snackbar(
+                                                                    'Exception while making player transaction!',
+                                                                    'Exception while making player transaction!',
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .person,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    snackPosition:
+                                                                        SnackPosition
+                                                                            .BOTTOM,
                                                                   );
-                                                                  _scaffoldKey
-                                                                      .currentState!
-                                                                      .showSnackBar(
-                                                                          snackBar);
                                                                 }
                                                               },
-                                                              color: const Color(
-                                                                  0xFF1BC0C5),
+                                                              // color: const Color(
+                                                              //     0xFF1BC0C5),
                                                               child: const Text(
                                                                 "Deposit to Player wallet",
                                                                 style: TextStyle(
@@ -495,24 +501,30 @@ class _MyAppState extends State<MyApp> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     GameOliveView(
-                                                  instance: _gameolivePlugin,
-                                                  launchConfig: launchConfig,
-                                                  onGoToHome: (value) {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  onBalanceChange: (balace) {
-                                                    debugPrint(
-                                                        "balance update");
-                                                  },
-                                                  onUserAchievementsUpdate:
-                                                      (achievements) {
-                                                    debugPrint(
-                                                        "achievements update");
-                                                  },
-                                                  onGameOliveWindowCreated: (GameOliveGameController gamecontroller){
-                                                    gamecontroller.openGameMenu();
-                                                  }
-                                                ),
+                                                        instance:
+                                                            _gameolivePlugin,
+                                                        launchConfig:
+                                                            launchConfig,
+                                                        onGoToHome: (value) {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        onBalanceChange:
+                                                            (balace) {
+                                                          debugPrint(
+                                                              "balance update");
+                                                        },
+                                                        onUserAchievementsUpdate:
+                                                            (achievements) {
+                                                          debugPrint(
+                                                              "achievements update");
+                                                        },
+                                                        onGameOliveWindowCreated:
+                                                            (GameOliveGameController
+                                                                gamecontroller) {
+                                                          gamecontroller
+                                                              .openGameMenu();
+                                                        }),
                                               ));
                                         },
                                       ),

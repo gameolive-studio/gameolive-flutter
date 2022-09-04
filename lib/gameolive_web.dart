@@ -94,6 +94,21 @@ class GameoliveWeb extends GameolivePlatform {
   }
 
   @override
+  Future<List<PlayerAchievement>> getPlayerAchievements(
+      String playerToken, String playerUid,
+      [Config? config]) async {
+    return gameolive.getPlayerAchievements(playerToken, playerUid, config);
+  }
+
+  @override
+  Future<List<PlayerAchievement>> acknowledgePlayerAchievement(
+      String playerToken, String playerUid, String achievementId,
+      [Config? config]) async {
+    return gameolive.acknowledgePlayerAchievement(
+        playerToken, playerUid, achievementId, config);
+  }
+
+  @override
   Future<List<PlayerAchievement>> notifyPlayerAction(
       String playerToken, String playerUid, String action, String value,
       [Config? config]) {

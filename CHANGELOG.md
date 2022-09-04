@@ -1,3 +1,7 @@
+## 0.0.25
+
+* Bugf ixfor web mode.
+* 
 ## 0.0.24
 
 * Added support to get leaderboard for challenges.

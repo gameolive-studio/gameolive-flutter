@@ -13,11 +13,11 @@ import 'models/badgesResponse.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
 import 'models/launchConfig.dart';
+import 'models/leader.dart';
 import 'models/playerBalance.dart';
 import 'models/player_achievement.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
-import 'services/playerService.dart';
 import 'shared/playmode.dart';
 
 // ignore: non_constant_identifier_names
@@ -83,7 +83,6 @@ class GameoliveWeb extends GameolivePlatform {
 
   @override
   Future<BadgesResponse> getAvailableBadges([Config? config]) async {
-    config ??= CONFIG!;
     return gameolive.getAvailableBadges(config);
   }
 
@@ -91,7 +90,6 @@ class GameoliveWeb extends GameolivePlatform {
   Future<List<String>> getBadgesEarnedByPlayer(
       String playerUid, PlayMode playMode,
       [Config? config]) async {
-    config ??= CONFIG!;
     return gameolive.getBadgesEarnedByPlayer(playerUid, playMode, config);
   }
 
@@ -99,6 +97,15 @@ class GameoliveWeb extends GameolivePlatform {
   Future<List<PlayerAchievement>> notifyPlayerAction(
       String playerToken, String playerUid, String action, String value,
       [Config? config]) {
-    return gameolive.notifyPlayerAction(playerToken, playerUid, action, value, config);
+    return gameolive.notifyPlayerAction(
+        playerToken, playerUid, action, value, config);
+  }
+
+  @override
+  Future<List<Leader>> getLeaderBoard(
+      String playerToken, String playerUid, String challengeId, int limit,
+      [Config? config]) {
+    return gameolive.getLeaderBoard(
+        playerToken, playerUid, challengeId, limit, config);
   }
 }

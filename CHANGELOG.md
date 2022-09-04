@@ -1,5 +1,8 @@
 ## 0.0.24
 
+* Added support to get leaderboard for challenges.
+## 0.0.24
+
 * Added web mode support.
 ## 0.0.23
 

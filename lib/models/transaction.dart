@@ -20,29 +20,28 @@ class Transaction {
       {this.uid, this.amount, this.currency, this.coins, this.reference});
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
-    Transaction _transaction = new Transaction(
+    Transaction transaction = Transaction(
         uid: json['uid'],
         amount: json['amount'] != null ? (json['amount']).toDouble() : 0.0,
         currency: json['currency'],
         coins: json['coins'],
         reference: json['reference']);
     if (json['transactionTypeIdentifier'] != null) {
-      _transaction.transactionTypeIdentifier =
-          json['transactionTypeIdentifier'];
+      transaction.transactionTypeIdentifier = json['transactionTypeIdentifier'];
     }
     if (json['remarks'] != null) {
-      _transaction.remarks = json['remarks'];
+      transaction.remarks = json['remarks'];
     }
     if (json['productName'] != null) {
-      _transaction.productName = json['productName'];
+      transaction.productName = json['productName'];
     }
     if (json['productId'] != null) {
-      _transaction.productId = json['productId'];
+      transaction.productId = json['productId'];
     }
     if (json['sku'] != null) {
-      _transaction.sku = json['sku'];
+      transaction.sku = json['sku'];
     }
 
-    return _transaction;
+    return transaction;
   }
 }

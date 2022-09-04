@@ -11,6 +11,7 @@ import 'package:gameolive/models/config.dart';
 import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
+import 'package:gameolive/models/leader.dart';
 import 'package:gameolive/models/playerBalance.dart';
 import 'package:gameolive/models/player_achievement.dart';
 import 'package:gameolive/models/transaction.dart';
@@ -105,6 +106,10 @@ class _MyAppState extends State<MyApp> {
       GamesResponse gamesResponse =
           await _gameolivePlugin.getGames(10, 0); // get first 10 games
       games = gamesResponse.games;
+
+      List<Leader> leaders = await _gameolivePlugin.getLeaderBoard(
+          _playerToken, _playerId, "TEST_CHALLENGE_ID", 5);
+      debugPrint('Leaders: ${leaders.length}');
     } on PlatformException {
       // Log exception and report studio@gameolive.com
     }

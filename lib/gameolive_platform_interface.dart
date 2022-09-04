@@ -6,6 +6,7 @@ import 'models/badgesResponse.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
 import 'models/launchConfig.dart';
+import 'models/leader.dart';
 import 'models/playerBalance.dart';
 import 'models/transaction.dart';
 import 'models/transactionsResponse.dart';
@@ -99,5 +100,11 @@ abstract class GameolivePlatform extends PlatformInterface {
       String playerToken, String playerUid, String action, String value,
       [Config? config]) async {
     throw UnimplementedError('getAvailableBadges() has not been implemented.');
+  }
+
+  Future<List<Leader>> getLeaderBoard(
+      String playerToken, String playerUid, String challengeId, int limit,
+      [Config? config]) async {
+    throw UnimplementedError('getLeaderBoard() has not been implemented.');
   }
 }

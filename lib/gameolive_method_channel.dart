@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:gameolive/models/leader.dart';
 
 import 'gameolive_platform_interface.dart';
 
@@ -125,5 +126,13 @@ class MethodChannelGameolive extends GameolivePlatform {
       [Config? config]) {
     config ??= CONFIG!;
     return registerPlayerAction(playerToken, playerUid, action, value, config);
+  }
+
+  @override
+  Future<List<Leader>> getLeaderBoard(
+      String playerToken, String playerUid, String challengeId, int limit,
+      [Config? config]) {
+    config ??= CONFIG!;
+    return fetchLeaderBoard(playerToken, playerUid, challengeId, limit, config);
   }
 }

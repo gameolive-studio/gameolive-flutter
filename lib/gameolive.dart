@@ -3,6 +3,7 @@ import 'models/badgesResponse.dart';
 import 'models/config.dart';
 import 'models/gamesResponse.dart';
 import 'models/launchConfig.dart';
+import 'models/leader.dart';
 import 'models/playerBalance.dart';
 import 'models/player_achievement.dart';
 import 'models/transaction.dart';
@@ -87,5 +88,12 @@ class Gameolive {
     config ??= CONFIG!;
     return GameolivePlatform.instance
         .getBadgesEarnedByPlayer(playerUid, playMode, config);
+  }
+
+  Future<List<Leader>> getLeaderBoard(
+      String playerToken, String playerUid, String challengeId, int limit,
+      [Config? config]) async {
+    return GameolivePlatform.instance
+        .getLeaderBoard(playerToken, playerUid, challengeId, limit, config);
   }
 }

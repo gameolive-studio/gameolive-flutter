@@ -56,12 +56,12 @@ class _MyAppState extends State<MyApp> {
   String _playerToken = "";
 
   final TextEditingController _txtPlayerUid = TextEditingController();
-  TextEditingController? _txtTransactionId;
-  TextEditingController? _txtAmount;
-  TextEditingController? _txtCurrency;
-  TextEditingController? _txtCoins;
-  TextEditingController? _txtRefernce;
-  TextEditingController? _txtRemarks;
+  final TextEditingController _txtTransactionId = TextEditingController();
+  final TextEditingController _txtAmount = TextEditingController();
+  final TextEditingController _txtCurrency = TextEditingController();
+  final TextEditingController _txtCoins = TextEditingController();
+  final TextEditingController _txtRefernce = TextEditingController();
+  final TextEditingController _txtRemarks = TextEditingController();
 
   @override
   void initState() {
@@ -388,22 +388,22 @@ class _MyAppState extends State<MyApp> {
                                                                   () async {
                                                                 try {
                                                                   Transaction trx = Transaction(
-                                                                      uid: _txtTransactionId!
+                                                                      uid: _txtTransactionId
                                                                           .text,
                                                                       amount: double.parse(
-                                                                          _txtAmount!
+                                                                          _txtAmount
                                                                               .text),
                                                                       currency:
-                                                                          _txtCurrency!
+                                                                          _txtCurrency
                                                                               .text,
                                                                       coins: int.parse(
-                                                                          _txtCoins!
+                                                                          _txtCoins
                                                                               .text),
                                                                       reference:
-                                                                          _txtRefernce!
+                                                                          _txtRefernce
                                                                               .text);
                                                                   trx.remarks =
-                                                                      _txtRemarks!
+                                                                      _txtRemarks
                                                                           .text;
                                                                   // Create new configuration with service account with Wallet Manager permissions.
                                                                   // it is recommended to no give wallet manager permissions to Game Admin or other permissions as it might risk the exploitation of wallet

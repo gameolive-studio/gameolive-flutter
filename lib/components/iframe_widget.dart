@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:html';
 import 'dart:ui' as ui;
-import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
@@ -8,33 +8,25 @@ import '../controllers/base/gameolive_game_controller.dart';
 import '../models/playerBalance.dart';
 import '../models/player_achievement.dart';
 import '../shared/StandardEvents.dart';
+import 'gameolive_webview_widget.dart';
 
-class IFrameWidget extends StatefulWidget {
-  final String initialUrl;
-  final Function(bool)? onRoundStarted;
-  final Function(bool)? onRoundEnded;
-  final Function(bool)? onGoToHome;
-  final Function(PlayerBalance)? onBalanceChange;
-  final Function(List<PlayerAchievement>)? onUserAchievementsUpdate;
-  final GameOliveGameControllerCallback? onGameOliveWindowCreated;
-
+class IFrameWidget extends GameOliveWebViewWidget {
   const IFrameWidget(
-      {Key? key,
-      required this.initialUrl,
-      this.onRoundStarted,
-      this.onRoundEnded,
-      this.onGoToHome,
-      this.onBalanceChange,
-      this.onUserAchievementsUpdate,
-      this.onGameOliveWindowCreated})
-      : super(key: key);
+      {super.key,
+      required super.initialUrl,
+      super.onRoundStarted,
+      super.onRoundEnded,
+      super.onGoToHome,
+      super.onBalanceChange,
+      super.onUserAchievementsUpdate,
+      super.onGameOliveWindowCreated});
 
   @override
   State<IFrameWidget> createState() => _IFrameWidgetState();
 }
 
 class _IFrameWidgetState extends State<IFrameWidget> {
-  final html.IFrameElement _iframeElement = html.IFrameElement();
+  final IFrameElement _iframeElement = IFrameElement();
 
   @override
   void initState() {
@@ -52,17 +44,17 @@ class _IFrameWidgetState extends State<IFrameWidget> {
       (int viewId) => _iframeElement,
     );
     Future.delayed(const Duration(microseconds: 500), () {
-      var iframeElement = html.document.getElementById('gameolive-game-frame')
-          as html.IFrameElement;
+      var iframeElement =
+          document.getElementById('gameolive-game-frame') as IFrameElement;
       iframeElement.contentWindow!.location.href = widget.initialUrl;
     });
 
     Future.delayed(const Duration(seconds: 5), () {
-      var iframeElement = html.document.getElementById('gameolive-game-frame')
-          as html.IFrameElement;
+      var iframeElement =
+          document.getElementById('gameolive-game-frame') as IFrameElement;
 
-      html.window.addEventListener("message", (html.Event event) {
-        var data = (event as html.MessageEvent).data;
+      window.addEventListener("message", (Event event) {
+        var data = (event as MessageEvent).data;
         Map<String, dynamic> eventData = jsonDecode(data);
         respondToContainer(eventData);
       });
@@ -73,7 +65,7 @@ class _IFrameWidgetState extends State<IFrameWidget> {
       }
       // .postMessage({"event": "SHOW_MENU"}, '*');
       // debugPrint("dfgrhrgfdewegrhtrgefw2");
-      // html.document.getElementById('hello-world-html').contentWindow.postMessage("");
+      // document.getElementById('hello-world-html').contentWindow.postMessage("");
     });
 
     super.initState();
@@ -130,7 +122,7 @@ class _IFrameWidgetState extends State<IFrameWidget> {
 }
 
 class IframeGameOliveGameController extends GameOliveGameController {
-  final html.WindowBase contentWindow;
+  final WindowBase contentWindow;
   IframeGameOliveGameController(this.contentWindow) : super();
 
   @override
@@ -163,3 +155,20 @@ class IframeGameOliveGameController extends GameOliveGameController {
     contentWindow.postMessage({"event": "RELOAD_GAME"}, '*');
   }
 }
+
+GameOliveWebViewWidget getGameOliveWebViewWidget(
+        initialUrl,
+        onRoundStartedl,
+        onRoundEnded,
+        onGoToHome,
+        onBalanceChange,
+        onUserAchievementsUpdate,
+        onGameOliveWindowCreated) =>
+    IFrameWidget(
+        initialUrl: initialUrl,
+        onRoundStarted: onRoundStartedl,
+        onRoundEnded: onRoundEnded,
+        onGoToHome: onGoToHome,
+        onBalanceChange: onBalanceChange,
+        onUserAchievementsUpdate: onUserAchievementsUpdate,
+        onGameOliveWindowCreated: onGameOliveWindowCreated);

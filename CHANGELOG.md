@@ -1,3 +1,7 @@
+## 0.0.28
+
+* Bugfix build app.
+
 ## 0.0.27
 
 * Bugf ixfor web mode.

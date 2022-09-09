@@ -1,13 +1,7 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
-
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+
 import 'package:gameolive/models/player_achievement.dart';
-import 'package:gameolive/shared/StandardEvents.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'components/iframe_widget.dart';
+import 'components/gameolive_webview_widget.dart';
 import 'controllers/base/gameolive_game_controller.dart';
 import 'gameolive.dart';
 import 'models/launchConfig.dart';
@@ -45,7 +39,6 @@ class GameOliveWindow extends StatefulWidget {
 
 class _GameOliveWindowState extends State<GameOliveWindow> {
   String? gameUrl;
-  WebViewController? _controller;
 
   final initialContent =
       '<h4> This is some hardcoded HTML code embedded inside the webview <h4> <h2> Hello world! <h2>';
@@ -87,150 +80,70 @@ class _GameOliveWindowState extends State<GameOliveWindow> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.grey,
-        // alignment: Alignment.center,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.black,
-                ),
-                child: gameUrl == null
-                    ? null
-                    : kIsWeb
-                        ? IFrameWidget(
-                            initialUrl:
-                                "$gameUrl&${widget.additionalQueryString ?? ''}",
-                            onRoundStarted: widget.onRoundStarted,
-                            onRoundEnded: widget.onRoundEnded,
-                            onGoToHome: widget.onGoToHome,
-                            onBalanceChange: widget.onBalanceChange,
-                            onUserAchievementsUpdate:
-                                widget.onUserAchievementsUpdate,
-                            onGameOliveWindowCreated:
-                                widget.onGameOliveWindowCreated)
-                        : WebView(
-                            initialUrl:
-                                "$gameUrl&${widget.additionalQueryString ?? ''}",
-                            javascriptMode: JavascriptMode.unrestricted,
-                            onWebViewCreated:
-                                (WebViewController webViewController) {
-                              // _controller.complete(webViewController);
-                              _controller = webViewController;
-                              _addPostScript(webViewController, context);
+      color: Colors.grey,
+      // alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.black,
+            ),
+            child: gameUrl == null
+                ? null
+                : GameOliveWebViewWidget.getGameOliveWebViewWidgetFactory(
+                    "$gameUrl&${widget.additionalQueryString ?? ''}",
+                    widget.onRoundStarted,
+                    widget.onRoundEnded,
+                    widget.onGoToHome,
+                    widget.onBalanceChange,
+                    widget.onUserAchievementsUpdate,
+                    widget.onGameOliveWindowCreated)
+            // IFrameWidget(
+            //     initialUrl:
+            //         "$gameUrl&${widget.additionalQueryString ?? ''}",
+            //     onRoundStarted: widget.onRoundStarted,
+            //     onRoundEnded: widget.onRoundEnded,
+            //     onGoToHome: widget.onGoToHome,
+            //     onBalanceChange: widget.onBalanceChange,
+            //     onUserAchievementsUpdate: widget.onUserAchievementsUpdate,
+            //     onGameOliveWindowCreated: widget.onGameOliveWindowCreated)
+            // : WebviewWidget(
+            //     initialUrl:
+            //         "$gameUrl&${widget.additionalQueryString ?? ''}",
+            //     onRoundStarted: widget.onRoundStarted,
+            //     onRoundEnded: widget.onRoundEnded,
+            //     onGoToHome: widget.onGoToHome,
+            //     onBalanceChange: widget.onBalanceChange,
+            //     onUserAchievementsUpdate: widget.onUserAchievementsUpdate,
+            //     onGameOliveWindowCreated:
+            //         widget.onGameOliveWindowCreated),
+            // WebView(
+            //     initialUrl:
+            //         "$gameUrl&${widget.additionalQueryString ?? ''}",
+            //     javascriptMode: JavascriptMode.unrestricted,
+            //     onWebViewCreated:
+            //         (WebViewController webViewController) {
+            //       // _controller.complete(webViewController);
+            //       _controller = webViewController;
+            //       _addPostScript(webViewController, context);
 
-                              final GameOliveGameController controller =
-                                  WebViewGameOliveGameController(_controller!);
+            //       final GameOliveGameController controller =
+            //           WebViewGameOliveGameController(_controller!);
 
-                              if (widget.onGameOliveWindowCreated != null) {
-                                widget.onGameOliveWindowCreated!(controller);
-                              }
-                            },
-                            javascriptChannels: <JavascriptChannel>{
-                              _gameoliveChannel(context),
-                              _inGOLAppChannel(context),
-                            },
-                          ))));
-  }
-
-  JavascriptChannel _inGOLAppChannel(BuildContext context) {
-    return JavascriptChannel(
-        name: 'InGOLApp',
-        onMessageReceived: (JavascriptMessage message) {
-          // ignore: deprecated_member_use
-          // sleep(Duration(seconds: 60));
-          Map<String, dynamic> event = jsonDecode(message.message);
-          respondToContainer(event);
-        });
-  }
-
-  JavascriptChannel _gameoliveChannel(BuildContext context) {
-    return JavascriptChannel(
-        name: 'GAMEOLIVE',
-        onMessageReceived: (JavascriptMessage message) {
-          // ignore: deprecated_member_use
-          // sleep(Duration(seconds: 60));
-          Map<String, dynamic> event = jsonDecode(message.message);
-          if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
-              widget.onRoundStarted != null) {
-            widget.onRoundStarted!(true);
-          }
-        });
-  }
-
-  void _addPostScript(
-      WebViewController controller, BuildContext context) async {
-    await _controller!.runJavascript(
-        'window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));}; document.body.style.setProperty("background","transparent")');
-  }
-
-  void respondToContainer(Map<String, dynamic> event) {
-    // todo: refactor and reuse in iframe_widget
-    if (event["event"] == StandardEvents.GAMEOLIVE_GAME_GOTO_HOME &&
-        widget.onGoToHome != null) {
-      widget.onGoToHome!(true);
-    }
-    if (event["event"] == StandardEvents.GAMEOLIVE_BALANCE_CHANGE &&
-        widget.onBalanceChange != null) {
-      widget.onBalanceChange!(PlayerBalance.fromJson(event));
-    }
-    if (event["event"] == StandardEvents.GAMEOLIVE_USER_ACHIEVEMENTS_UPDATE &&
-        widget.onUserAchievementsUpdate != null) {
-      List<PlayerAchievement> achievements = [];
-      var list = event["achievements"];
-      achievements = list == null
-          ? achievements
-          : list
-              .map<PlayerAchievement>((i) => PlayerAchievement.fromJson(i))
-              .toList();
-
-      widget.onUserAchievementsUpdate!(achievements);
-    }
-    if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
-        widget.onRoundStarted != null) {
-      widget.onRoundStarted!(true);
-    }
-    if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_ENDED &&
-        widget.onRoundEnded != null) {
-      widget.onRoundEnded!(true);
-    }
-  }
-}
-
-class WebViewGameOliveGameController extends GameOliveGameController {
-  final WebViewController _controller;
-  WebViewGameOliveGameController(this._controller) : super();
-
-  @override
-  Future<void> openGameMenu() async {
-    await _controller.runJavascript('window.golApi.openGameMenu();');
-  }
-
-  @override
-  Future<void> closeGameMenu() async {
-    await _controller.runJavascript('window.golApi.closeGameMenu();');
-  }
-
-  @override
-  Future<void> pauseGame() async {
-    await _controller.runJavascript('window.golApi.pauseGame();');
-  }
-
-  @override
-  Future<void> resumePausedGame() async {
-    await _controller.runJavascript('window.golApi.resumePausedGame();');
-  }
-
-  @override
-  Future<void> reloadBalance() async {
-    await _controller.runJavascript('window.golApi.reloadBalance();');
-  }
-
-  @override
-  Future<void> reloadGame() async {
-    await _controller.runJavascript('window.golApi.reloadGame();');
+            //       if (widget.onGameOliveWindowCreated != null) {
+            //         widget.onGameOliveWindowCreated!(controller);
+            //       }
+            //     },
+            //     javascriptChannels: <JavascriptChannel>{
+            //       _gameoliveChannel(context),
+            //       _inGOLAppChannel(context),
+            //     },
+            //   )),
+            ),
+      ),
+    );
   }
 }

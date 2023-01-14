@@ -81,6 +81,15 @@ Future<String> fetchGameUrl(
     String server = gameLauncherResponse['configuration']['server'];
     String urlData =
         'gameid=$gameId&configid=$configId&server=$server&operatorid=${config.operatorId}&playerid=$playerId&playertoken=$playerToken&currency=$currency';
+
+    if (gameLauncherResponse['configuration']['launch'] != null) {
+      Map<String, dynamic> launchParams =
+          gameLauncherResponse['configuration']['launch'];
+      launchParams.forEach((key, value) {
+        urlData += '&${key}=${value}';
+      });
+    }
+
     if (gameLaunchConfig.rawUrl != true) {
       Codec<String, String> stringToBase64 = utf8.fuse(base64);
       String encoded = stringToBase64.encode(urlData);

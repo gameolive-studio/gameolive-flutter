@@ -1,4 +1,8 @@
-## 0.0.29
+## 0.0.31
+
+* Added support to restore app orientation.
+
+## 0.0.30
 
 * Fix usage of generic token.
 

@@ -10,4 +10,5 @@ class LaunchConfig {
   String? gameContainerId;
   bool? rawUrl;
   String orientation = "";
+  String orientationOnExit = "";
 }

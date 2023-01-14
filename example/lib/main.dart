@@ -502,6 +502,8 @@ class _MyAppState extends State<MyApp> {
                                               item.configuration;
                                           launchConfig.orientation =
                                               "landscape";
+                                          launchConfig.orientationOnExit =
+                                              "landscape";
                                           launchConfig.playerId = _playerId;
                                           launchConfig.playerToken =
                                               _playerToken;

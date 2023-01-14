@@ -1,3 +1,7 @@
+## 0.0.29
+
+* Added support to add launc config.
+
 ## 0.0.28
 
 * Bugfix build app.

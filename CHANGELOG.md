@@ -1,6 +1,10 @@
 ## 0.0.29
 
-* Added support to add launc config.
+* Fix usage of generic token.
+
+## 0.0.29
+
+* Added support to add launch config.
 
 ## 0.0.28
 

@@ -43,7 +43,7 @@ class MethodChannelGameolive extends GameolivePlatform {
     final Auth auth = await authenticate(config);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (auth.token != null) {
-      await prefs.setString('token', auth.token ?? "");
+      await prefs.setString('gol_token', auth.token ?? "");
     }
     CONFIG = config;
     CONFIG!.token = auth.token;

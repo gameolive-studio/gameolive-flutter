@@ -22,9 +22,9 @@ class Gameolive {
     return GameolivePlatform.instance.init(config);
   }
 
-  Future<GamesResponse> getGames(int limit, int offset,
+  Future<GamesResponse> getGames(int limit, int offset, String cacheKey,
       [Config? config]) async {
-    return GameolivePlatform.instance.getGames(limit, offset, config);
+    return GameolivePlatform.instance.getGames(limit, offset, cacheKey, config);
   }
 
   Future<String> getGameUrl(LaunchConfig? gameLaunchConfig) async {

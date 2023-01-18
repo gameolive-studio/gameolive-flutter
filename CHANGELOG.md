@@ -1,3 +1,7 @@
+## 0.0.32
+
+* Added support for passing cacheKey and "no-cache" value while fetching games list.
+
 ## 0.0.31
 
 * Added support to restore app orientation.

@@ -7,28 +7,30 @@ import 'package:http/http.dart' as http;
 import '../models/config.dart';
 
 // GamesResponse? REF_GAMES = null;
-Future<GamesResponse> fetchGames(int limit, int offset, Config config) async {
+/// Pass cacheKey = "no-cache" to ignore caching
+Future<GamesResponse> fetchGames(
+    int limit, int offset, String cachekey, Config config) async {
   String path =
-      '${config.server}/api/tenant/${config.operatorId}/active-games?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}&cachekey=test';
+      '${config.server}/api/tenant/${config.operatorId}/active-games?filter[application]=${config.application}&orderBy=${config.orderBy}&limit=${limit > 0 ? limit : config.limit}&offset=${offset > 0 ? offset : config.offset}&cachekey=$cachekey';
+  if (cachekey != "no-cache") {
+    try {
+      var file = await GameoliveCacheManager.instance
+          .getSingleFile(path, headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${config.token}',
+      });
+      if (await file.exists()) {
+        var res = await file.readAsString();
 
-  try {
-    var file = await GameoliveCacheManager.instance
-        .getSingleFile(path, headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer ${config.token}',
-    });
-    if (await file.exists()) {
-      var res = await file.readAsString();
-
-      GamesResponse games = GamesResponse.fromJson(json.decode(res));
-      // REF_GAMES = games;
-      return games;
+        GamesResponse games = GamesResponse.fromJson(json.decode(res));
+        // REF_GAMES = games;
+        return games;
+      }
+    } catch (ex) {
+      print(
+          "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
     }
-  } catch (ex) {
-    print(
-        "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
   }
-
   final response = await http.get(Uri.parse(path), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${config.token}',

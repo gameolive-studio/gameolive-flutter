@@ -41,7 +41,7 @@ abstract class GameolivePlatform extends PlatformInterface {
     throw UnimplementedError('init() has not been implemented.');
   }
 
-  Future<GamesResponse> getGames(int limit, int offset,
+  Future<GamesResponse> getGames(int limit, int offset, String cacheKey,
       [Config? config]) async {
     throw UnimplementedError('getGames() has not been implemented.');
   }

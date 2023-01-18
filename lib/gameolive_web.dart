@@ -45,9 +45,9 @@ class GameoliveWeb extends GameolivePlatform {
   }
 
   @override
-  Future<GamesResponse> getGames(int limit, int offset,
+  Future<GamesResponse> getGames(int limit, int offset, String cacheKey,
       [Config? config]) async {
-    return gameolive.getGames(limit, offset, config);
+    return gameolive.getGames(limit, offset, cacheKey, config);
   }
 
   @override

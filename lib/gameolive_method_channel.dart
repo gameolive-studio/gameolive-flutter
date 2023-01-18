@@ -51,10 +51,10 @@ class MethodChannelGameolive extends GameolivePlatform {
   }
 
   @override
-  Future<GamesResponse> getGames(int limit, int offset,
+  Future<GamesResponse> getGames(int limit, int offset, String cacheKey,
       [Config? config]) async {
     config ??= CONFIG!;
-    return fetchGames(limit, offset, config);
+    return fetchGames(limit, offset, cacheKey, config);
   }
 
   @override

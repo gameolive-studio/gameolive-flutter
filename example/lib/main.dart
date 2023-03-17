@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
       await _gameolivePlugin.init(config); // initialize the library
 
       GamesResponse gamesResponse =
-          await _gameolivePlugin.getGames(10, 0); // get first 10 games
+          await _gameolivePlugin.getGames(10, 0, ''); // get first 10 games
       games = gamesResponse.games;
       try {
         List<Leader> leaders = await _gameolivePlugin.getLeaderBoard(

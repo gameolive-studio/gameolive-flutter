@@ -8,8 +8,8 @@ class Game {
   String? label;
   String? description;
   bool? enabled;
-  double? rating;
-  double? playerCount;
+  num? rating;
+  num? playerCount;
   Game({this.id, this.title, this.configuration, this.photos});
 
   factory Game.fromJson(Map<String, dynamic> json) {

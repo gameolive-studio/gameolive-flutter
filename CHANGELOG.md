@@ -1,3 +1,7 @@
+## 0.0.34
+
+* Minor patch fixes.
+
 ## 0.0.32
 
 * Added support for passing cacheKey and "no-cache" value while fetching games list.

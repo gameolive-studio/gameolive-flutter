@@ -1,11 +1,11 @@
 name: gameolive
 description: A  plugin to integrate awesome games and intract with GameOlive platform operrings and features.
-version: 0.0.32
+version: 0.0.34
 # author: GameOlive Studio <studio@gameolive.com>
 homepage: https://github.com/gameolive-studio/gameolive-flutter
 
 environment:
-  sdk: ">=2.17.5 <3.0.0"
+  sdk: ">=2.17.5 <4.0.0"
   flutter: ">=2.5.0"
 
 dependencies:

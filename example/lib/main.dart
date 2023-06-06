@@ -25,7 +25,7 @@ const clientId =
     "fb_game_sa-4862d2b3-fb68-4963-b47b-beec6af422a5@05cc351f-dbd0-43af-aaaf-515ffaecdd34.gol";
 const clientSecret = "abc1602937927739";
 const operatorId = "5f8ae3cbc34272000af1f3bf";
-const server = 'https://elantra-api.gameolive.com';
+const server = 'https://prod-platform-service-xrfoa2ko5q-em.a.run.app';
 const static = 'https://static.luckybeetlegames.com';
 const walletClientId =
     "wallet_manager-6f18a5bb-9b2e-4ed8-b7db-abf6465256f8@4e539d5f-4dd9-4518-8e67-49e401ea0b4b.gol";
@@ -106,13 +106,13 @@ class _MyAppState extends State<MyApp> {
       GamesResponse gamesResponse =
           await _gameolivePlugin.getGames(10, 0, ''); // get first 10 games
       games = gamesResponse.games;
-      try {
-        List<Leader> leaders = await _gameolivePlugin.getLeaderBoard(
-            _playerToken, _playerId, "TEST_CHALLENGE_ID", 5);
-        debugPrint('Leaders: ${leaders.length}');
-      } catch (ex) {
-        debugPrint('Leaders: Error');
-      }
+      // try {
+      //   List<Leader> leaders = await _gameolivePlugin.getLeaderBoard(
+      //       _playerToken, _playerId, "TEST_CHALLENGE_ID", 5);
+      //   debugPrint('Leaders: ${leaders.length}');
+      // } catch (ex) {
+      //   debugPrint('Leaders: Error');
+      // }
     } on PlatformException {
       // Log exception and report studio@gameolive.com
     }
@@ -264,14 +264,14 @@ class _MyAppState extends State<MyApp> {
                                                                       PlayMode
                                                                           .real,
                                                                       walletConfig);
-                                                                  List<PlayerAchievement>
-                                                                      achievements =
-                                                                      await _gameolivePlugin.notifyPlayerAction(
-                                                                          playerToken,
-                                                                          _txtPlayerUid
-                                                                              .text,
-                                                                          "FIRST_TIME",
-                                                                          "1");
+                                                                  // List<PlayerAchievement>
+                                                                  //     achievements =
+                                                                  //     await _gameolivePlugin.notifyPlayerAction(
+                                                                  //         playerToken,
+                                                                  //         _txtPlayerUid
+                                                                  //             .text,
+                                                                  //         "FIRST_TIME",
+                                                                  //         "1");
                                                                   debugPrint(
                                                                       "eddwdweded");
                                                                   // List<PlayerAchievement>
@@ -504,6 +504,7 @@ class _MyAppState extends State<MyApp> {
                                               "landscape";
                                           launchConfig.orientationOnExit =
                                               "landscape";
+                                          launchConfig.currency = "DEMO";
                                           launchConfig.playerId = _playerId;
                                           launchConfig.playerToken =
                                               _playerToken;

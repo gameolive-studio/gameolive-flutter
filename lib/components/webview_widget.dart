@@ -1,9 +1,11 @@
 // https://github.com/flutter/flutter/issues/53005
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../controllers/base/gameolive_game_controller.dart';
 import '../models/playerBalance.dart';
@@ -27,60 +29,63 @@ class WebviewWidget extends GameOliveWebViewWidget {
 }
 
 class _WebviewWidgetState extends State<WebviewWidget> {
-  WebViewController? _controller;
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // late final PlatformWebViewControllerCreationParams params;
+    // if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+    //   params = WebKitWebViewControllerCreationParams(
+    //     allowsInlineMediaPlayback: true,
+    //     mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+    //   );
+    // } else {
+    //   params = const PlatformWebViewControllerCreationParams();
+    // }
+
+    // final WebViewController controller =
+    //     WebViewController.fromPlatformCreationParams(params);
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel('InGOLApp',
+          onMessageReceived: (JavaScriptMessage message) {
+        // ignore: deprecated_member_use
+        // sleep(Duration(seconds: 60));
+        Map<String, dynamic> event = jsonDecode(message.message);
+        respondToContainer(event);
+      })
+      ..addJavaScriptChannel('GAMEOLIVE',
+          onMessageReceived: (JavaScriptMessage message) {
+        // ignore: deprecated_member_use
+        // sleep(Duration(seconds: 60));
+        Map<String, dynamic> event = jsonDecode(message.message);
+        if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
+            widget.onRoundStarted != null) {
+          widget.onRoundStarted!(true);
+        }
+      })
+      ..loadRequest(Uri.parse(widget.initialUrl));
+    // _controller = controller;
+    final GameOliveGameController gameOliveController =
+        WebViewGameOliveGameController(_controller);
+
+    if (widget.onGameOliveWindowCreated != null) {
+      widget.onGameOliveWindowCreated!(gameOliveController);
+    }
+    _addPostScript(_controller, context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return WebView(
-      initialUrl: widget.initialUrl,
-      javascriptMode: JavascriptMode.unrestricted,
-      onWebViewCreated: (WebViewController webViewController) {
-        // _controller.complete(webViewController);
-        _controller = webViewController;
-        _addPostScript(webViewController, context);
-
-        final GameOliveGameController controller =
-            WebViewGameOliveGameController(_controller!);
-
-        if (widget.onGameOliveWindowCreated != null) {
-          widget.onGameOliveWindowCreated!(controller);
-        }
-      },
-      javascriptChannels: <JavascriptChannel>{
-        _gameoliveChannel(context),
-        _inGOLAppChannel(context),
-      },
+    return WebViewWidget(
+      controller: _controller,
     );
-  }
-
-  JavascriptChannel _inGOLAppChannel(BuildContext context) {
-    return JavascriptChannel(
-        name: 'InGOLApp',
-        onMessageReceived: (JavascriptMessage message) {
-          // ignore: deprecated_member_use
-          // sleep(Duration(seconds: 60));
-          Map<String, dynamic> event = jsonDecode(message.message);
-          respondToContainer(event);
-        });
-  }
-
-  JavascriptChannel _gameoliveChannel(BuildContext context) {
-    return JavascriptChannel(
-        name: 'GAMEOLIVE',
-        onMessageReceived: (JavascriptMessage message) {
-          // ignore: deprecated_member_use
-          // sleep(Duration(seconds: 60));
-          Map<String, dynamic> event = jsonDecode(message.message);
-          if (event["event"] == StandardEvents.GAMEOLIVE_GAME_ROUND_STARTED &&
-              widget.onRoundStarted != null) {
-            widget.onRoundStarted!(true);
-          }
-        });
   }
 
   void _addPostScript(
       WebViewController controller, BuildContext context) async {
-    await _controller!.runJavascript(
+    await _controller.runJavaScript(
         'window.onmessage = function(event) {GAMEOLIVE.postMessage(JSON.stringify(event.data));}; document.body.style.setProperty("background","transparent")');
   }
 
@@ -123,32 +128,32 @@ class WebViewGameOliveGameController extends GameOliveGameController {
 
   @override
   Future<void> openGameMenu() async {
-    await _controller.runJavascript('window.golApi.openGameMenu();');
+    await _controller.runJavaScript('window.golApi.openGameMenu();');
   }
 
   @override
   Future<void> closeGameMenu() async {
-    await _controller.runJavascript('window.golApi.closeGameMenu();');
+    await _controller.runJavaScript('window.golApi.closeGameMenu();');
   }
 
   @override
   Future<void> pauseGame() async {
-    await _controller.runJavascript('window.golApi.pauseGame();');
+    await _controller.runJavaScript('window.golApi.pauseGame();');
   }
 
   @override
   Future<void> resumePausedGame() async {
-    await _controller.runJavascript('window.golApi.resumePausedGame();');
+    await _controller.runJavaScript('window.golApi.resumePausedGame();');
   }
 
   @override
   Future<void> reloadBalance() async {
-    await _controller.runJavascript('window.golApi.reloadBalance();');
+    await _controller.runJavaScript('window.golApi.reloadBalance();');
   }
 
   @override
   Future<void> reloadGame() async {
-    await _controller.runJavascript('window.golApi.reloadGame();');
+    await _controller.runJavaScript('window.golApi.reloadGame();');
   }
 }
 

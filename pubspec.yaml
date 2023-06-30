@@ -14,7 +14,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   plugin_platform_interface: ^2.1.4
-  http: ^0.13.5
+  http: ^1.1.0
   shared_preferences: ^2.0.18
   flutter_cache_manager: ^3.3.0
   webview_flutter: ^4.0.6

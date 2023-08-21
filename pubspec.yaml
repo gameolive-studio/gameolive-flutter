@@ -13,17 +13,17 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  plugin_platform_interface: ^2.1.4
+  plugin_platform_interface: ^2.1.5
   http: ^1.1.0
-  shared_preferences: ^2.0.18
-  flutter_cache_manager: ^3.3.0
-  webview_flutter: ^4.0.6
+  shared_preferences: ^2.2.0
+  flutter_cache_manager: ^3.3.1
+  webview_flutter: ^4.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-  file: ^6.1.4
+  flutter_lints: ^2.0.2
+  file: ^7.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

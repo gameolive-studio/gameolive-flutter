@@ -1,14 +1,17 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:gameolive/models/badgesResponse.dart';
 import 'package:gameolive/shared/GameoliveCacheManager.dart';
 import 'package:gameolive/shared/playmode.dart';
-import 'package:http/http.dart' as http;
 
 import '../models/config.dart';
 
 Future<BadgesResponse> fetchAvailableBadges(Config config) async {
-  String path = config.server +
-      '/api/tenant/${config.operatorId}/available-badges?filter[application]=${config.application}&category=${config.category}';
+  String path =
+      '${config.server}/api/tenant/${config.operatorId}/available-badges?filter[application]=${config.application}&category=${config.category}';
 
   try {
     var file = await GameoliveCacheManager.instance
@@ -16,7 +19,7 @@ Future<BadgesResponse> fetchAvailableBadges(Config config) async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${config.token}',
     });
-    if (file != null && await file.exists()) {
+    if (await file.exists()) {
       var res = await file.readAsString();
 
       BadgesResponse badges = BadgesResponse.fromJson(json.decode(res));
@@ -24,8 +27,10 @@ Future<BadgesResponse> fetchAvailableBadges(Config config) async {
       return badges;
     }
   } catch (ex) {
-    print(
-        "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
+    if (kDebugMode) {
+      print(
+          "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
+    }
   }
 
   final response = await http.get(Uri.parse(path), headers: <String, String>{
@@ -52,8 +57,8 @@ Future<BadgesResponse> fetchAvailableBadges(Config config) async {
 
 Future<List<String>> fetchUserBadges(
     String playerUid, PlayMode playMode, Config config) async {
-  String path = config.server +
-      '/api/tenant/${config.operatorId}/user-badges?filter[application]=${config.application}&filter[player_uid]=$playerUid&filter[category]=${config.category}&filter[playMode]=${playMode.toString()}';
+  String path =
+      '${config.server}/api/tenant/${config.operatorId}/user-badges?filter[application]=${config.application}&filter[player_uid]=$playerUid&filter[category]=${config.category}&filter[playMode]=${playMode.toString()}';
 
   final response = await http.get(Uri.parse(path), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',

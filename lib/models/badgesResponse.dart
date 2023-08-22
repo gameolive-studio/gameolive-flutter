@@ -9,7 +9,7 @@ class BadgesResponse {
   factory BadgesResponse.fromJson(Map<String, dynamic> json) {
     var list = json['rows'] as List;
     List<Badge>? games =
-        list == null ? null : list.map((i) => Badge.fromJson(i)).toList();
+        list.isEmpty ? null : list.map((i) => Badge.fromJson(i)).toList();
 
     return BadgesResponse(
       badges: games,

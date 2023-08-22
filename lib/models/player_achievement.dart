@@ -17,7 +17,7 @@ class PlayerAchievement {
 
   PlayerAchievement.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    progress = json['progress'];
+    progress = num.parse(json['progress'] ?? "0");
     progressPct = double.tryParse(json['progressPct'] ?? "0");
     isAcknowledged = json['isAcknowledged'];
 

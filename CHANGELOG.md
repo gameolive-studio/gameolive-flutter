@@ -1,3 +1,7 @@
+## 0.0.35
+
+* Updated dependencies.
+
 ## 0.0.34
 
 * Minor patch fixes.

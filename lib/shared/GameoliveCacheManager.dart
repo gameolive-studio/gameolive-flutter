@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class GameoliveCacheManager {
@@ -9,7 +10,9 @@ class GameoliveCacheManager {
     try {
       instance.emptyCache();
     } catch (ex) {
-      print("Some exception happened while clearing the cache");
+      if (kDebugMode) {
+        print("Some exception happened while clearing the cache");
+      }
     }
   }
 }

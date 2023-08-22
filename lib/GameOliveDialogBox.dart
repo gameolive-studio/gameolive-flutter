@@ -27,11 +27,10 @@ class _GameOliveDialogBoxState extends State<GameOliveDialogBox> {
   contentBox(context) {
     return Stack(
       children: <Widget>[
-        Container(
-            child: GameOliveWindow(
+        GameOliveWindow(
           instance: widget.instance,
           gameLaunchConfig: widget.gameLaunchConfig,
-        )),
+        ),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -11,9 +12,7 @@ import 'package:gameolive/models/config.dart';
 import 'package:gameolive/models/game.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
-import 'package:gameolive/models/leader.dart';
 import 'package:gameolive/models/playerBalance.dart';
-import 'package:gameolive/models/player_achievement.dart';
 import 'package:gameolive/models/transaction.dart';
 import 'package:gameolive/shared/playmode.dart';
 import 'package:get/get.dart';
@@ -187,15 +186,18 @@ class _MyAppState extends State<MyApp> {
                                           String gameLink =
                                               await _gameolivePlugin
                                                   .getGameUrl(launchConfig);
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return CustomDialogBox(
-                                                  title: "Link to the game",
-                                                  descriptions: gameLink,
-                                                  text: "Close",
-                                                );
-                                              });
+                                          Future.delayed(Duration.zero).then(
+                                            (value) => showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return CustomDialogBox(
+                                                    title: "Link to the game",
+                                                    descriptions: gameLink,
+                                                    text: "Close",
+                                                  );
+                                                }),
+                                          );
                                         },
                                       ),
                                       IconSlideAction(
@@ -212,258 +214,257 @@ class _MyAppState extends State<MyApp> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20.0)), //this right here
-                                                  child: Container(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              12.0),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Player UID'),
-                                                            controller:
-                                                                _txtPlayerUid,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 320.0,
-                                                            child:
-                                                                ElevatedButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                try {
-                                                                  String playerToken = await _gameolivePlugin.getPlayerToken(
-                                                                      _txtPlayerUid
-                                                                          .text,
-                                                                      PlayMode
-                                                                          .real);
-
-                                                                  Config walletConfig = Config(
-                                                                      operatorId:
-                                                                          operatorId,
-                                                                      clientId:
-                                                                          walletClientId,
-                                                                      clientSecret:
-                                                                          walletClientSecret,
-                                                                      server:
-                                                                          server,
-                                                                      static:
-                                                                          static);
-                                                                  PlayerBalance pb = await _gameolivePlugin.getPlayerBalance(
-                                                                      playerToken,
-                                                                      _txtPlayerUid
-                                                                          .text,
-                                                                      PlayMode
-                                                                          .real,
-                                                                      walletConfig);
-                                                                  // List<PlayerAchievement>
-                                                                  //     achievements =
-                                                                  //     await _gameolivePlugin.notifyPlayerAction(
-                                                                  //         playerToken,
-                                                                  //         _txtPlayerUid
-                                                                  //             .text,
-                                                                  //         "FIRST_TIME",
-                                                                  //         "1");
-                                                                  debugPrint(
-                                                                      "eddwdweded");
-                                                                  // List<PlayerAchievement>
-                                                                  //     allAchievements =
-                                                                  //     await _gameolivePlugin
-                                                                  //         .getPlayerAchievements(
-                                                                  //   playerToken,
-                                                                  //   _txtPlayerUid
-                                                                  //       .text,
-                                                                  // );
-
-                                                                  // dynamic status = await _gameolivePlugin.acknowledgePlayerAchievement(
-                                                                  //     "123456", _playerId);
-
-                                                                  setState(() {
-                                                                    _playerId =
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            12.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Player UID'),
+                                                          controller:
+                                                              _txtPlayerUid,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 320.0,
+                                                          child: ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              try {
+                                                                String
+                                                                    playerToken =
+                                                                    await _gameolivePlugin.getPlayerToken(
                                                                         _txtPlayerUid
-                                                                            .text;
-                                                                    _playerToken =
-                                                                        playerToken;
-                                                                    _playerBalance =
-                                                                        pb;
-                                                                  });
+                                                                            .text,
+                                                                        PlayMode
+                                                                            .real);
 
-                                                                  // var transactions = await _gameolivePlugin.getPlayerAccountHistory(
-                                                                  //     _playerId,
-                                                                  //     PlayMode
-                                                                  //         .real,
-                                                                  //     0,
-                                                                  //     10,
-                                                                  //     walletConfig);
-                                                                  // print(transactions
-                                                                  //     .count);
-                                                                } catch (ex) {
-                                                                  Get.snackbar(
-                                                                    'Exception while getting plater token!',
-                                                                    'Exception while getting plater token!',
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .person,
-                                                                        color: Colors
-                                                                            .white),
-                                                                    snackPosition:
-                                                                        SnackPosition
-                                                                            .BOTTOM,
-                                                                  );
-                                                                }
-                                                              },
-                                                              // color: const Color(
-                                                              //     0xFF1BC0C5),
-                                                              child: const Text(
-                                                                "Register Or Login Player",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                              'Current Player: $_playerId'),
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Transaction UID'),
-                                                            controller:
-                                                                _txtTransactionId,
-                                                          ),
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Amount'),
-                                                            controller:
-                                                                _txtAmount,
-                                                          ),
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Currency'),
-                                                            controller:
-                                                                _txtCurrency,
-                                                          ),
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Coins'),
-                                                            controller:
-                                                                _txtCoins,
-                                                          ),
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Reference'),
-                                                            controller:
-                                                                _txtRefernce,
-                                                          ),
-                                                          TextField(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        'Remarks'),
-                                                            controller:
-                                                                _txtRemarks,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 320.0,
-                                                            child:
-                                                                ElevatedButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                try {
-                                                                  Transaction trx = Transaction(
-                                                                      uid: _txtTransactionId
-                                                                          .text,
-                                                                      amount: double.parse(
-                                                                          _txtAmount
-                                                                              .text),
-                                                                      currency:
-                                                                          _txtCurrency
-                                                                              .text,
-                                                                      coins: int.parse(
-                                                                          _txtCoins
-                                                                              .text),
-                                                                      reference:
-                                                                          _txtRefernce
-                                                                              .text);
-                                                                  trx.remarks =
-                                                                      _txtRemarks
+                                                                Config walletConfig = Config(
+                                                                    operatorId:
+                                                                        operatorId,
+                                                                    clientId:
+                                                                        walletClientId,
+                                                                    clientSecret:
+                                                                        walletClientSecret,
+                                                                    server:
+                                                                        server,
+                                                                    static:
+                                                                        static);
+                                                                PlayerBalance pb = await _gameolivePlugin.getPlayerBalance(
+                                                                    playerToken,
+                                                                    _txtPlayerUid
+                                                                        .text,
+                                                                    PlayMode
+                                                                        .real,
+                                                                    walletConfig);
+                                                                // List<PlayerAchievement>
+                                                                //     achievements =
+                                                                //     await _gameolivePlugin.notifyPlayerAction(
+                                                                //         playerToken,
+                                                                //         _txtPlayerUid
+                                                                //             .text,
+                                                                //         "FIRST_TIME",
+                                                                //         "1");
+                                                                debugPrint(
+                                                                    "eddwdweded");
+                                                                // List<PlayerAchievement>
+                                                                //     allAchievements =
+                                                                //     await _gameolivePlugin
+                                                                //         .getPlayerAchievements(
+                                                                //   playerToken,
+                                                                //   _txtPlayerUid
+                                                                //       .text,
+                                                                // );
+
+                                                                // dynamic status = await _gameolivePlugin.acknowledgePlayerAchievement(
+                                                                //     "123456", _playerId);
+
+                                                                setState(() {
+                                                                  _playerId =
+                                                                      _txtPlayerUid
                                                                           .text;
-                                                                  // Create new configuration with service account with Wallet Manager permissions.
-                                                                  // it is recommended to no give wallet manager permissions to Game Admin or other permissions as it might risk the exploitation of wallet
-                                                                  // it is highly recommended to use wallet manager service account for server to server request and not to use in client application, but if you wish to use it on client side for simplicity you can do it at your own risk
-                                                                  Config walletConfig = Config(
-                                                                      operatorId:
-                                                                          operatorId,
-                                                                      clientId:
-                                                                          walletClientId,
-                                                                      clientSecret:
-                                                                          walletClientSecret,
-                                                                      server:
-                                                                          server,
-                                                                      static:
-                                                                          static);
-                                                                  var newTransaction =
-                                                                      await _gameolivePlugin.depositToPlayerAccount(
-                                                                          _playerId,
-                                                                          trx,
-                                                                          walletConfig);
-                                                                  setState(() {
-                                                                    _playerBalance =
-                                                                        newTransaction;
-                                                                  });
-                                                                  // print( // todo make new Model for TransactionRef.
-                                                                  //     _newTransaction
-                                                                  //         .uid);
-                                                                } catch (ex) {
-                                                                  Get.snackbar(
-                                                                    'Exception while making player transaction!',
-                                                                    'Exception while making player transaction!',
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .person,
-                                                                        color: Colors
-                                                                            .white),
-                                                                    snackPosition:
-                                                                        SnackPosition
-                                                                            .BOTTOM,
-                                                                  );
-                                                                }
-                                                              },
-                                                              // color: const Color(
-                                                              //     0xFF1BC0C5),
-                                                              child: const Text(
-                                                                "Deposit to Player wallet",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
+                                                                  _playerToken =
+                                                                      playerToken;
+                                                                  _playerBalance =
+                                                                      pb;
+                                                                });
+
+                                                                // var transactions = await _gameolivePlugin.getPlayerAccountHistory(
+                                                                //     _playerId,
+                                                                //     PlayMode
+                                                                //         .real,
+                                                                //     0,
+                                                                //     10,
+                                                                //     walletConfig);
+                                                                // print(transactions
+                                                                //     .count);
+                                                              } catch (ex) {
+                                                                Get.snackbar(
+                                                                  'Exception while getting plater token!',
+                                                                  'Exception while getting plater token!',
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .person,
+                                                                      color: Colors
+                                                                          .white),
+                                                                  snackPosition:
+                                                                      SnackPosition
+                                                                          .BOTTOM,
+                                                                );
+                                                              }
+                                                            },
+                                                            // color: const Color(
+                                                            //     0xFF1BC0C5),
+                                                            child: const Text(
+                                                              "Register Or Login Player",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                        Text(
+                                                            'Current Player: $_playerId'),
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Transaction UID'),
+                                                          controller:
+                                                              _txtTransactionId,
+                                                        ),
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Amount'),
+                                                          controller:
+                                                              _txtAmount,
+                                                        ),
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Currency'),
+                                                          controller:
+                                                              _txtCurrency,
+                                                        ),
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Coins'),
+                                                          controller: _txtCoins,
+                                                        ),
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Reference'),
+                                                          controller:
+                                                              _txtRefernce,
+                                                        ),
+                                                        TextField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  hintText:
+                                                                      'Remarks'),
+                                                          controller:
+                                                              _txtRemarks,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 320.0,
+                                                          child: ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              try {
+                                                                Transaction trx = Transaction(
+                                                                    uid: _txtTransactionId
+                                                                        .text,
+                                                                    amount: double.parse(
+                                                                        _txtAmount
+                                                                            .text),
+                                                                    currency:
+                                                                        _txtCurrency
+                                                                            .text,
+                                                                    coins: int.parse(
+                                                                        _txtCoins
+                                                                            .text),
+                                                                    reference:
+                                                                        _txtRefernce
+                                                                            .text);
+                                                                trx.remarks =
+                                                                    _txtRemarks
+                                                                        .text;
+                                                                // Create new configuration with service account with Wallet Manager permissions.
+                                                                // it is recommended to no give wallet manager permissions to Game Admin or other permissions as it might risk the exploitation of wallet
+                                                                // it is highly recommended to use wallet manager service account for server to server request and not to use in client application, but if you wish to use it on client side for simplicity you can do it at your own risk
+                                                                Config walletConfig = Config(
+                                                                    operatorId:
+                                                                        operatorId,
+                                                                    clientId:
+                                                                        walletClientId,
+                                                                    clientSecret:
+                                                                        walletClientSecret,
+                                                                    server:
+                                                                        server,
+                                                                    static:
+                                                                        static);
+                                                                var newTransaction =
+                                                                    await _gameolivePlugin.depositToPlayerAccount(
+                                                                        _playerId,
+                                                                        trx,
+                                                                        walletConfig);
+                                                                setState(() {
+                                                                  _playerBalance =
+                                                                      newTransaction;
+                                                                });
+                                                                // print( // todo make new Model for TransactionRef.
+                                                                //     _newTransaction
+                                                                //         .uid);
+                                                              } catch (ex) {
+                                                                Get.snackbar(
+                                                                  'Exception while making player transaction!',
+                                                                  'Exception while making player transaction!',
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .person,
+                                                                      color: Colors
+                                                                          .white),
+                                                                  snackPosition:
+                                                                      SnackPosition
+                                                                          .BOTTOM,
+                                                                );
+                                                              }
+                                                            },
+                                                            // color: const Color(
+                                                            //     0xFF1BC0C5),
+                                                            child: const Text(
+                                                              "Deposit to Player wallet",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 );
                                               });
 
-                                          print('share');
+                                          if (kDebugMode) {
+                                            print('share');
+                                          }
                                         },
                                       ),
                                     ],

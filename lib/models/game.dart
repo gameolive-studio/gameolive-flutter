@@ -15,7 +15,7 @@ class Game {
   factory Game.fromJson(Map<String, dynamic> json) {
     var list = json['photos'] as List;
     List<Photo>? photos =
-        list == null ? null : list.map((i) => Photo.fromJson(i)).toList();
+        list.isEmpty ? null : list.map((i) => Photo.fromJson(i)).toList();
 
     var game = Game(
         id: json['id'],

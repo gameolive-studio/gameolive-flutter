@@ -19,7 +19,8 @@ class GameOliveView extends StatelessWidget {
   final GameOliveGameControllerCallback? onGameOliveWindowCreated;
 
   const GameOliveView(
-      {this.launchConfig,
+      {super.key,
+      this.launchConfig,
       required this.instance,
       this.additionalQueryString,
       this.onRoundStarted,

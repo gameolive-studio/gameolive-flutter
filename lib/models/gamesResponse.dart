@@ -9,7 +9,7 @@ class GamesResponse {
   factory GamesResponse.fromJson(Map<String, dynamic> json) {
     var list = json['rows'] as List;
     List<Game>? games =
-        list == null ? null : list.map((i) => Game.fromJson(i)).toList();
+        list.isEmpty ? null : list.map((i) => Game.fromJson(i)).toList();
 
     return GamesResponse(
       games: games,

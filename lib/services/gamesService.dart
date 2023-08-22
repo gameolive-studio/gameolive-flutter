@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:gameolive/models/gamesResponse.dart';
 import 'package:gameolive/models/launchConfig.dart';
 import 'package:gameolive/shared/GameoliveCacheManager.dart';
@@ -27,8 +28,10 @@ Future<GamesResponse> fetchGames(
         return games;
       }
     } catch (ex) {
-      print(
-          "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
+      if (kDebugMode) {
+        print(
+            "Seems like, there is some trouble with app caching, so fetching from server (a bit unoptimized)");
+      }
     }
   }
   final response = await http.get(Uri.parse(path), headers: <String, String>{
@@ -88,7 +91,7 @@ Future<String> fetchGameUrl(
       Map<String, dynamic> launchParams =
           gameLauncherResponse['configuration']['launch'];
       launchParams.forEach((key, value) {
-        urlData += '&${key}=${value}';
+        urlData += '&$key=$value';
       });
     }
 
